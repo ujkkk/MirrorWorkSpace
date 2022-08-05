@@ -2,7 +2,6 @@ from re import T
 import paho.mqtt.client as mqtt
 from crop import createCropImage
 import os
-from keras.models import load_model
 import byteList
 global client
 
