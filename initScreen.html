@@ -15,7 +15,7 @@
             }
         </style>
         <script>   
-            const loginMqtt = require("./mqtt")
+            const client = require("./mqtt")
             var loginFlag = true
             function createAddUserImage(){
                 console.log("함수 호출")
@@ -34,14 +34,15 @@
                     loginFlag = false
                 }
                 console.log("loginCamera publish")
-                loginMqtt.publish('loginCamera',"login")
-                //loginMqtt.publish('createAccountCamera',"UJ")
+                //client.publish('loginCamera',"login")
+                //client.publish('createAccountCamera',"UJ")
                 
             }
             // addUserImage 선택 > 회원가입 화면으로 넘어가기
             function clickCreateAccount(){
                 console.log('clickCreateAccount()')
-                document.location.href='createAccount.html'
+                client.publish('existingUser', 'ok')
+                //document.location.href='createAccount.html'
                 
             }
 

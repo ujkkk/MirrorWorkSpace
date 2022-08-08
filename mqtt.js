@@ -11,25 +11,39 @@ const options = {
 
   client.subscribe("loginCheck")
   client.subscribe('createAccount/check')
+  client.subscribe('exist/check')
 
   client.on('message', (topic, message, packet) => {
     console.log("message is "+ message);
     console.log("topic is "+ topic);
     
+    if(topic == "exist/check"){
+      user_id = String(message)
+      if(user_id == 'NULL'){
+        //회원가입 하게 만들기
+        document.location.href='createAccount.html'
+      }
+      else{
+        _db.select('name', 'user', `user_id =${user_id}`)
+        .then(user_name =>{
+          createLoginMessage.createMessage(String(user_name[0].name) +'님은 이미 가입된 유저입니다.')
+        })
+      }
 
+    }
     //서버에서 로그인을 하고 신호가 들어옴
     if(topic == "loginCheck"){
       console.log("topic == loginCheck")
       user_id = String(message)
       console.log('loginCheck : 디비에서 이름 받아오기')
       if(user_id == 'NULL'){
-        createLoginMessage('NULL')
+        createLoginMessage.createLoginMessage('NULL')
       }
       else{
         //client.publish('createAccount/start')
         _db.select('name', 'user', `user_id =${user_id}`)
         .then(user_name =>{
-            createLoginMessage(String(user_name[0].name))
+          createLoginMessage.createLoginMessage(String(user_name[0].name))
             _db.setUser(user_id)
         })
       } 

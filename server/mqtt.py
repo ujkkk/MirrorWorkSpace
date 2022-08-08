@@ -14,21 +14,29 @@ embeddingModel = load_model('facenet_keras.h5')
 
 create_account_flag = False
 login_flag = False
+exist_flag = False
 user_id = 0
 user_name = ''
 flag = False
+existUser = ''
 
 def on_connect(client, userdata, flag, rc):
     print("Connect with result code:"+ str(rc))
     client.subscribe('login')
     client.subscribe('createAccount/start')
     client.subscribe('createAccount/image')
+    client.subscribe('exist')
+
 count= 0
 def on_message(client, userdata, msg):
     global count
     global flag
     #command = msg.payload.decode("utf-8")
    # print("receiving ", msg.topic, " ", str(msg.payload))
+    if(msg.topic == 'exist'): 
+        global exist_flag 
+        exist_flag = True
+
     if(msg.topic == 'login'):  
         count = (count +1)%10
        # print('imagelist 받아오기')
@@ -91,11 +99,18 @@ client.loop_start()
 stopFlag = False
 while True :
     if (login_flag):
+       
         print('while - login')
         loginCheck = login(embeddingModel)
-        client.publish('loginCheck', loginCheck)
-       # print("sending %s" % loginCheck)
+        
+        if(exist_flag):
+            client.publish('exist/check', loginCheck)
+            
+        else :
+            client.publish('loginCheck', loginCheck)
+        # print("sending %s" % loginCheck)
         login_flag = False
+        exist_flag = False
 
     if (create_account_flag):
         print('while - createAccount')

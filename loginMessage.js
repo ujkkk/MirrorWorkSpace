@@ -1,11 +1,16 @@
 const remote = require('electron').remote;
 function createLoginMessage(user){
 
-        var loginMessageDiv = document.createElement("div")
+    var loginMessageDiv
+    if(document.getElementById("loginMessageDiv") == null){
+        loginMessageDiv = document.createElement("div")
         loginMessageDiv.setAttribute("id", "loginMessageDiv")
         loginMessageDiv.setAttribute("width","500px")
         loginMessageDiv.setAttribute("height","100px")
         loginMessageDiv.setAttribute("style", "text-align=center;")
+    }
+    else
+        loginMessageDiv = document.getElementById("loginMessageDiv") 
     //이미지 생성
     if(user != 'NULL'){
 
@@ -21,4 +26,25 @@ function createLoginMessage(user){
     div.appendChild(loginMessageDiv)
 }
 
-module.exports = createLoginMessage
+function createMessage(msg){
+
+    var loginMessageDiv
+    if(document.getElementById("loginMessageDiv") == null){
+        loginMessageDiv = document.createElement("div")
+        loginMessageDiv.setAttribute("id", "loginMessageDiv")
+        loginMessageDiv.setAttribute("width","500px")
+        loginMessageDiv.setAttribute("height","100px")
+        loginMessageDiv.setAttribute("style", "text-align=center;")
+    }
+    else
+        loginMessageDiv = document.getElementById("loginMessageDiv") 
+//이미지 생성
+
+    loginMessageDiv.innerHTML=  '<h2>' + msg + '</h2>'  
+
+
+    var div = document.getElementById("loginMessage")
+    div.appendChild(loginMessageDiv)
+}
+
+module.exports = {createLoginMessage, createMessage}

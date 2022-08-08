@@ -13,26 +13,37 @@ new_account_flag = False
 login_flag = False
 loginCamera_flag = False
 createAccountCamera_flag = False
+exist_flag = False
+
 user_id = 0
 def on_connect(client, userdata, flag, rc):
     print("Connect with result code:"+ str(rc))
     client.subscribe('loginCamera')
     client.subscribe('createAccountCamera')
+    client.subscribe('existingUser')
 
 def on_message(client, userdata, msg):
     message = msg.payload.decode("utf-8")
     print("payload : " + str(message))
+
     if(msg.topic == 'loginCamera'):
         print("topic : " + msg.topic)
         if(str(message) == 'login'):
             global loginCamera_flag
             loginCamera_flag = True
+            
     if(msg.topic == 'createAccountCamera'):
         print("topic : " + msg.topic)
         global user_id
         user_id = str(message)
         global createAccountCamera_flag
         createAccountCamera_flag = True
+
+    if(msg.topic == 'existingUser'):
+        client.publish('exist', 'ok')
+        global exist_flag
+        exist_flag = True
+
             
        
 broker_ip = "localhost" # 현재 이 컴퓨터를 브로커로 설정
@@ -89,18 +100,25 @@ def Camera_createAccount(username, count):
         client.publish('createAccount/image', imageByte)
 
 def existingUsers():
-    dir_name = os.path.join('face','train', 'user')
-    createCropImage('user', dir_name, 20)
-     # 사진 넘겨주기
-    imagelist = load_image(dir_name)
-    for i in range(10) :
-        imageByte = imagelist.pop()
-        # 서버에 보냄   
-        client.publish('login/existCheck', imageByte)
+    Camera_login(10)
+
 
 
 stopFlag = False
 while True :
+    if(exist_flag):
+        print('기존 유저인지 확인하는중')
+        # 카메라로 사진 찍어서 얼굴부분만 크롭해서 저장
+        dir_name1 = os.path.join('face','login')
+        dir_name2 = os.path.join('face','login','user')
+        createCropImage('user',  dir_name1, 10)
+        # 사진 넘겨주기
+        imagelist = load_image(dir_name2)
+        for i in range(10) :
+            imageByte = imagelist.pop()
+            client.publish('login', imageByte)
+        exist_flag = False
+
     if (loginCamera_flag):
         Camera_login(10)
         loginCamera_flag = False
