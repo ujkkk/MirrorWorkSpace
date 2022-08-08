@@ -12,18 +12,29 @@ os.chdir(curDir)
 new_account_flag = False
 login_flag = False
 loginCamera_flag = False
+createAccountCamera_flag = False
+user_id = 0
 def on_connect(client, userdata, flag, rc):
-	print("Connect with result code:"+ str(rc))
-	client.subscribe('loginCamera')
+    print("Connect with result code:"+ str(rc))
+    client.subscribe('loginCamera')
+    client.subscribe('createAccountCamera')
 
 def on_message(client, userdata, msg):
-    command = msg.payload.decode("utf-8")
-    print("receiving ", msg.topic, " ", str(msg.payload))
+    message = msg.payload.decode("utf-8")
+    print("payload : " + str(message))
     if(msg.topic == 'loginCamera'):
-        global loginCamera_flag
-        loginCamera_flag = True
+        print("topic : " + msg.topic)
+        if(str(message) == 'login'):
+            global loginCamera_flag
+            loginCamera_flag = True
+    if(msg.topic == 'createAccountCamera'):
+        print("topic : " + msg.topic)
+        global user_id
+        user_id = str(message)
+        global createAccountCamera_flag
+        createAccountCamera_flag = True
+            
        
-
 broker_ip = "localhost" # 현재 이 컴퓨터를 브로커로 설정
 print('broker_ip : ' + broker_ip)
 client = mqtt.Client()
@@ -32,24 +43,83 @@ client.on_message = on_message
 client.connect(broker_ip, 1883)
 client.loop_start()
 
+
+
+# 디렉토리 안의 모든 이미지를 불러오고 이미지에서 얼굴 추출
+def load_image(directory):
+    byteArr = list()
+    count = 0
+	#required_size = (160, 160)
+	# 파일 열거
+    #os.chdir(directory + os.sep)
+    for filename in os.listdir(directory):
+        count = count + 1
+        path = directory +os.sep + filename 
+                # 얼굴 추출
+                #face = extract_face(path)
+            
+        print(path)
+        f = open(path,"rb" )
+        filecontent = f.read()
+        print('logint byte정보 넘김')
+        byteArr.append(bytearray(filecontent))
+    return byteArr
+        
+#로그인하기 위해 사진찍기 시작
+def Camera_login(count):
+    print('while - loginCamera')
+    # 카메라로 사진 찍어서 얼굴부분만 크롭해서 저장
+    dir_name1 = os.path.join('face','login')
+    dir_name2 = os.path.join('face','login','user')
+    createCropImage('user',  dir_name1, count)
+    # 사진 넘겨주기
+    imagelist = load_image(dir_name2)
+    for i in range(count) :
+        imageByte = imagelist.pop()
+        client.publish('login', imageByte)
+
+
+def Camera_createAccount(username, count):
+   
+    # 사진 넘겨주기
+    imagelist = load_image(dir_name2)
+    for i in range(count) :
+        imageByte = imagelist.pop()
+        # 서버에 보냄   
+        client.publish('createAccount/image', imageByte)
+
+def existingUsers():
+    dir_name = os.path.join('face','train', 'user')
+    createCropImage('user', dir_name, 20)
+     # 사진 넘겨주기
+    imagelist = load_image(dir_name)
+    for i in range(10) :
+        imageByte = imagelist.pop()
+        # 서버에 보냄   
+        client.publish('login/existCheck', imageByte)
+
+
 stopFlag = False
 while True :
     if (loginCamera_flag):
-        print('while - loginCamera')
-       # curDir = os.path.dirname(os.path.realpath(__file__))
-        #os.chdir(curDir)
-    # 카메라로 사진 찍어서 얼굴부분만 크롭해서 저장
-        dir_name1 = os.path.join('face','login')
-        dir_name2 = os.path.join('face','login','user')
-        createCropImage('user',  dir_name1, 10)
-        # 사진 넘겨주기
-        imagelist = byteList.load_image(dir_name2)
-        for i in range(10) :
-            pp = imagelist.pop()
-            print("sending %s" % pp)
-            client.publish('login', pp)
-            print("sending %s" % 'login')
+        Camera_login(10)
         loginCamera_flag = False
+    if(createAccountCamera_flag):
+        
+        if not (user_id == 0):
+            print('user : ' + user_id)
+            # 시퀀스 받아와서 id 주기
+            # 파이에게 계정 생성하라고 pub
+            client.publish('createAccount/start', int(user_id))
+            print('while - createAccount')
+            # 카메라로 사진 찍어서 얼굴부분만 크롭해서 저장
+            dir_name1 = os.path.join('face','train')
+            dir_name2 = os.path.join('face','train', 'user')
+            createCropImage('user', dir_name1, 20)
+
+
+            Camera_createAccount('user', 20)
+            createAccountCamera_flag = False
     if (stopFlag):
         break
    

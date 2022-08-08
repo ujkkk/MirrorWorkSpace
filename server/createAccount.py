@@ -3,21 +3,15 @@ import numpy
 from dataPreProcess import load_dataset
 from dataPreProcess import embedding
 import os.path 
-from crop import createCropImage
 
 
-def createAccoount(embeddingModel, username):
+def createAccoount(embeddingModel):
 
     # 카메라로 사진 찍어서 얼굴부분만 크롭해서 저장
     curDir = os.path.dirname(os.path.realpath(__file__))
     #curDir = '.' + os.path.sep + 'faceRecognition'
     os.chdir(curDir)
-    # 현재 실행주소를 ./faceRecognition 폴더로 옮김
-
-    #얼굴부분만 크롭해서 저장
-    createCropImage(username, os.path.join('face','train'), 20)
-   
-    #image_data_dir= 'face/train/'
+    # 현재 실행주소를 ./faceRecognition 폴더로 옮김'
     # 라벨링 작업
     trainX, trainy = load_dataset(os.path.join('face','train') + os.path.sep)
     # 단일 압축 포맷 파일로 저장
@@ -32,4 +26,5 @@ def createAccoount(embeddingModel, username):
     numpy.savez_compressed('trainfaces-embeddings.npz', newTrainX, trainy )
     # 모델 학습
     model_fit('trainfaces-embeddings.npz')
+    return True
 

@@ -16,23 +16,32 @@
         </style>
         <script>   
             const loginMqtt = require("./mqtt")
-            var loginFlag = false
+            var loginFlag = true
             function createAddUserImage(){
                 console.log("함수 호출")
-    
-                //이미지 생성
-                console.log("이미지 생성")
-                var addUserImage = document.createElement("img")
-                addUserImage.setAttribute("id", "addUserImage")
-                addUserImage.setAttribute("src","image/adduser.png")
-                addUserImage.setAttribute("width","200px")
-                addUserImage.setAttribute("height","250px")
-                var div = document.getElementById("addUser")
-                div.appendChild(addUserImage)
-
-                loginFlag = true
+                
+                if(loginFlag){
+                    //이미지 생성
+                    console.log("이미지 생성")
+                    var addUserImage = document.createElement("img")
+                    addUserImage.setAttribute("id", "addUserImage")
+                    addUserImage.setAttribute("src","image/adduser.png")
+                    addUserImage.setAttribute("width","200px")
+                    addUserImage.setAttribute("height","250px")
+                    addUserImage.setAttribute("onclick", "clickCreateAccount()")
+                    var div = document.getElementById("addUser")
+                    div.appendChild(addUserImage)
+                    loginFlag = false
+                }
                 console.log("loginCamera publish")
-                loginMqtt.publish('loginCamera', "run")
+                loginMqtt.publish('loginCamera',"login")
+                //loginMqtt.publish('createAccountCamera',"UJ")
+                
+            }
+            // addUserImage 선택 > 회원가입 화면으로 넘어가기
+            function clickCreateAccount(){
+                console.log('clickCreateAccount()')
+                document.location.href='createAccount.html'
                 
             }
 
@@ -43,8 +52,9 @@
     </head>
     <body>
         <div class= "container"  onclick="createAddUserImage()">
+            <h1 style="position: absolute; color: aliceblue; left:45%; text-align: center;">Login</h1>
             <div id = "addUser" style="position: absolute; right: 20px; bottom: 20px;"></div>
-            <div id = "loginMessage" style="position: absolute; color: aliceblue;  left: 100px; bottom: 100px;"></div>
+            <div id = "loginMessage" style="position: absolute; color: aliceblue;  left: 300px; bottom: 300px;"></div>
         </div>
     
     </body>

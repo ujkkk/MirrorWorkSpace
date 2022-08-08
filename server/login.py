@@ -27,9 +27,8 @@ def login(embeddingModel):
     savez_compressed('login-embeddings.npz', newTrainX, trainy )
     user = user_check('login-embeddings.npz')
     if(user):
-        print('%s님 환영 합니다.'% user)
         return user
         
     else :
-        return NULL
+        return 'NULL'
 

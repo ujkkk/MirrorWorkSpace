@@ -59,7 +59,7 @@ def user_check(embedding_file_name):
         class_probability = yhat_prob[0,class_index] * 100
         predict_names = out_encoder.inverse_transform(yhat_class)
         print('예상: %s (%.3f)' % (predict_names[0], class_probability))
-        if (class_probability> 50):      
+        if (class_probability> 70):      
             count[class_index]  =  count[class_index] + 1
 
     # 같은 유저로 50%넘는 확률로 5번 이상 인식 한다면 해당 유저로 판별
@@ -77,7 +77,7 @@ def user_check(embedding_file_name):
     else:
         print(max(count))
         
-        return NULL
+        return 0
 
             
    # predict_names = out_encoder.inverse_transform(yhat_class)

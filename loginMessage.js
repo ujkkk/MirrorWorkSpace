@@ -3,17 +3,18 @@ function createLoginMessage(user){
 
         var loginMessageDiv = document.createElement("div")
         loginMessageDiv.setAttribute("id", "loginMessageDiv")
-        loginMessageDiv.setAttribute("width","200px")
+        loginMessageDiv.setAttribute("width","500px")
         loginMessageDiv.setAttribute("height","100px")
+        loginMessageDiv.setAttribute("style", "text-align=center;")
     //이미지 생성
-    if(user != 0){
-        loginMessageDiv.innerHTML=  user + "님 환영합니다."   
-       // remote.getCurrentWindow().loadFile('index.html');
+    if(user != 'NULL'){
 
+        loginMessageDiv.innerHTML=  '<h2>' + user + '님 환영합니다.</h2>'  
+       // remote.getCurrentWindow().loadFile('index.html');
         
     }
     else{
-        loginMessageDiv.innerHTML=  "등록된 사용자가 아닙니다."
+        loginMessageDiv.innerHTML=  "<h2>등록된 사용자가 아닙니다.</h2>"
     }
    
     var div = document.getElementById("loginMessage")
