@@ -34,10 +34,11 @@ const options = {
     //서버에서 로그인을 하고 신호가 들어옴
     if(topic == "loginCheck"){
       console.log("topic == loginCheck")
+      document.getElementById("loading").style.display="none";
       user_id = String(message)
       console.log('loginCheck : 디비에서 이름 받아오기')
       if(user_id == 'NULL'){
-        createLoginMessage.createLoginMessage('NULL')
+        createLoginMessage.createMessage('등록된 유저가 아닙니다.')
       }
       else{
         //client.publish('createAccount/start')

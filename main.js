@@ -16,7 +16,7 @@ function createWindow() {
     const win = new BrowserWindow(options);
     
     //win.webContents.openDevTools();  
-    win.loadFile("initScreen.html");
+    win.loadFile("init.html");
 }
 
 app.whenReady().then(() => {

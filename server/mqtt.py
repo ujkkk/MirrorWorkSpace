@@ -86,7 +86,7 @@ def on_message(client, userdata, msg):
         
         
 
-#broker_ip = '192.168.137.14' # 현재 이 컴퓨터를 브로커로 설정
+#broker_ip = '192.168.137.160' # 현재 이 컴퓨터를 브로커로 설정
 
 broker_ip = 'localhost'
 client = mqtt.Client()
@@ -105,9 +105,11 @@ while True :
         
         if(exist_flag):
             client.publish('exist/check', loginCheck)
+            print("exist")
             
         else :
             client.publish('loginCheck', loginCheck)
+            print('login')
         # print("sending %s" % loginCheck)
         login_flag = False
         exist_flag = False

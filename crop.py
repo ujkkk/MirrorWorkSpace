@@ -49,7 +49,7 @@ def createCropImage(userName, dir_path, countN):
             cv2.imwrite(dir_path + '/'+file_name_path, face)
     #저장 경로 ./face/login/
             # cv2.putText(face, str(count), (50, 50), cv2.FONT_HERSHEY_COMPLEX,1,(0,255,0),2)
-            cv2.imshow('Face Cropper',frame)
+           # cv2.imshow('Face Cropper',frame)
         else:
             print("Face not Found")
             pass
