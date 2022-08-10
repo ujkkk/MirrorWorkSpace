@@ -22,7 +22,9 @@ def face_extractor(img):
 
     return cropped_face
 
-
+def closeCam():
+    cam.release()
+    cv2.destroyAllWindows()
 
 def createCropImage(userName, dir_path, countN):
     

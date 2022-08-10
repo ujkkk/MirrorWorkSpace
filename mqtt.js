@@ -12,11 +12,18 @@ const options = {
   client.subscribe("loginCheck")
   client.subscribe('createAccount/check')
   client.subscribe('exist/check')
+  client.subscribe('reTrain/check')
 
   client.on('message', (topic, message, packet) => {
     console.log("message is "+ message);
     console.log("topic is "+ topic);
     
+    if(topic == 'reTrain/check'){
+      msg = String(message)
+      console.log(msg + '폴더로 재학습 되었습니다.')
+      createLoginMessage.createMessage(msg + '폴더로 재학습 되었습니다.')
+    }
+
     if(topic == "exist/check"){
       user_id = String(message)
       if(user_id == 'NULL'){
@@ -42,10 +49,14 @@ const options = {
       }
       else{
         //client.publish('createAccount/start')
+        //카메라 끄기
+        //client.publish('closeCamera', 'true')
         _db.select('name', 'user', `user_id =${user_id}`)
         .then(user_name =>{
+          // 'oo님 환영합니다' 문구 
           createLoginMessage.createLoginMessage(String(user_name[0].name))
-            _db.setUser(user_id)
+          // user 디비에 회원 추가
+          _db.setUser(user_id)
         })
       } 
     }
@@ -78,22 +89,3 @@ const options = {
 
 
 module.exports = client
-
-// client.subscribe('distance_closer');
-// client.subscribe('distance_far');
-
-// 
-
-// client.on('message', function(topic, message){
-//     if(topic.toString() == 'distance_closer'){
-//         console.log(message.toString())
-
-//         // const result = spawn('python', ['createAccount.py']);
-//         // result.stdout.on('data', function(data) {
-//         //     console.log(data.toString());
-//         // });
-//     }
-//     else if(topic.toString() == 'distance_far'){
-        
-//     }
-// });

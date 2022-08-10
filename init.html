@@ -103,6 +103,14 @@
                 document.getElementById("loading").style.display='block';
                 document.getElementById("loginMessage").innerHTML="";
             }
+
+            //재학습 시키기
+            function model(){
+                client.publish('reTrain', '')
+            }
+            function deleteUser(){
+                document.location.href = 'delete.html'
+            }
         </script>
     </head>
     <body>
@@ -112,6 +120,8 @@
         <div class="container">
             <div class="btnDiv" id="loginDiv"><button class="btn" id="loginBtn" onclick="login()">Login</button></div>
             <div class="btnDiv" id="signUpDiv"><button class="btn" id="signUpBtn" onclick="signUp()">Sign Up</button></div>
+            <div class="btnDiv" id="deleteDiv"><button class="btn" id="deleteBtn" onclick="deleteUser()">삭제</button></div>
+            <div class="btnDiv" id="modelDiv"><button class="btn" id="modelBtn" onclick="model()">Train</button></div>
         </div>
         <div id="loginMessage"></div>
     </body>
