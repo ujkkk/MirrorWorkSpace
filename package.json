@@ -10,8 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@electron/remote": "^2.0.8",
-    "electron": "^19.0.9",
+    "@electron/remote": "^0.0.1",
+    "electron": "^6.1.12",
     "mqtt": "^4.3.7",
     "mysql": "^2.18.1"
   }

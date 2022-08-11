@@ -25,7 +25,7 @@ reTrain_flag = False
 delete_login_flag = False
 delete_folder_flag = False
 delete_id = ''
-trainFolderName = 'train2'
+trainFolderName = 'train3'
 
 def on_connect(client, userdata, flag, rc):
     print("Connect with result code:"+ str(rc))
