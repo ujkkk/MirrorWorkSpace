@@ -1,0 +1,163 @@
+<html>
+    <head>
+        <title>Login & Sign up</title>
+        <meta charset="utf-8">
+        <style>
+            html,
+            body {
+                width: 100%;
+                height: 100%;
+                background-color: black;
+            }
+            label{
+                color : white;
+            }
+            .container {
+                position:relative;
+                /* display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh; */
+                top: 60%;
+                text-align: center;
+                /* margin-top: 50%; */
+            }
+            img{
+                display: inline-block;
+                content: "";
+                border: none;
+            }
+            .btnDiv{
+                margin: 30px;
+            }
+            .btn{
+                width: 40vw;
+                padding: 10px;
+                border: solid 3px white;
+                border-radius: 12px;
+                background-color:transparent;
+                color: white;
+                /* font-size: 5vw; */
+                font-size: xx-large;
+                /* font-weight: bold; */
+                /* font-family: 'Do Hyeon', sans-serif; */
+            }
+            .btn:active{
+                border: solid 3px gray;
+                color: gray;
+                background-color: white;
+            }
+        </style>
+        <script>
+            const encoding = 'LINEAR16';
+            //flac필요없이 잘만 되더라.
+            const sampleRateHertz = 16000;
+            const languageCode = 'ko-KR';
+            const axios = require('axios');
+            const fs = require('fs')
+            const file = fs.createWriteStream('band.wav', { encoding: 'binary' })
+            const recorder = require('node-record-lpcm16')
+            const recording = recorder.record({
+                sampleRateHertz: sampleRateHertz,
+                threshold: 0,
+                // Other options, see https://www.npmjs.com/package/node-record-lpcm16#options
+                verbose: false,
+                recordProgram: 'sox', // Try also "arecord" or "sox"
+                silence: '3.0',
+                sampleRate: 16000,
+                thresholdEnd: 1,
+                threshold: 0.5,
+            })
+
+            function start(){
+                recording.stream().pipe(file)
+                setTimeout(() => {
+                    recording.abort();
+                }, 3000)
+                
+                // let byteArr = new Array();
+                // let path = 'test.wav';
+                // let filecontent = fs.readFileSync(file_path);
+                // byteArr.push(bytearray(filecontent));
+                // print(byteArr.pop());
+            }
+
+            function save(){
+                
+            }
+
+            function convert(){
+                // let byteArr = new Array();
+                // let path = 'test.wav';
+                // let filecontent = fs.readFileSync(file_path);
+                // byteArr.push(bytearray(filecontent));
+                // console.log(byteArr.pop());
+
+                // fs.readFile('./test.wav','binary', (err, data) => {
+                // if (err) throw err;
+                //     console.log(data);
+                // });
+
+                // const text = fs.readFileSync('test.wav');
+                // console.log(text);
+
+                //let byteArr = new Array();
+                let byteArr
+                let path = 'messegeSend/band.wav';
+                //let path = 'mqtt.png';  
+                let filecontent = fs.readFileSync(path);
+                //byteArr= new Uint8Array(filecontent);
+                byteArr = filecontent
+                //let byteAudio = byteArr.pop();
+
+                console.log(byteArr);
+
+                axios({
+                    url: 'http://localhost:3000/send/audio', // 통신할 웹문서
+                    method: 'post', // 통신할 방식
+                    data: { // 인자로 보낼 데이터
+                        content: byteArr
+                    }
+                });
+
+                
+            }
+
+            if(document.getElementById('sendBtn')){
+                document.getElementById('sendBtn').addEventListener('click',()=>{
+                    
+                })
+            }
+        </script>
+    </head>
+    <body>
+        <div class="container">  
+            <div class ="message">
+                <!-- <form id ="media-form" action="/send/vedio" method="post" enctype="multipart/form-data">
+                    <div class ="input-group">
+                        <label for="message-receiver">받는 사람</label>
+                        <input id="message-receiver" type="text" name="receiver" ></div>
+                    <div class ="input-group">
+                        <label for="message-content">보낼 파일</label>
+                        <input type="file" name="video">
+                    </div>
+                    <div class ="input-group">
+                        <input id ="sender" type="hidden" value="001001" name="sender"></div>   
+                    </div>
+                    <div class="btnDiv" id="sendDiv"> 
+                        <button class="btn" id="sendBtn" type="submit">send</button>
+                    </div>
+                </form> -->
+                <button id="start" onclick="start()">녹음 시작 (3초후 stop)</button>
+                <button onclick="convert()">Click</button>
+                <form id ="audio-form" action="/send/audio" method="post" enctype="multipart/form-data">
+                    <input id="audioByte" type="text" name="content">
+                    <input id="message-receiver" type="text" name="receiver" >
+                    <input id ="sender" type="hidden" value="001001" name="sender">
+                    <button class="btn" id="sendBtn" type="submit">Send</button>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

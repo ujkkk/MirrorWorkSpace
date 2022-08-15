@@ -16,7 +16,7 @@ function createWindow() {
     const win = new BrowserWindow(options);
     
     //win.webContents.openDevTools();  
-    win.loadFile("init.html");
+    win.loadFile("messegeSend/imageSend1.html");
 }
 
 app.whenReady().then(() => {

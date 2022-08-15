@@ -12,7 +12,7 @@ function deleteClick(user_id){
     console.log('delete.js | id : ' + id)
     client.publish('delete/camera', 'delete')
 }
-client.subscribe("delete/login/check")
+client.subscribe("delete/login/check") 
 
 client.subscribe('delete/folder/check')
 
@@ -31,8 +31,7 @@ client.on('message', (topic, message, packet) => {
         textDiv = document.getElementById('text')
         if(textDiv != null)
          textDiv.innerHTML="<h3>삭제 중 입니다...</h3>";
-         //모델 재학습
-         client.publish('reTrain', '')
+        
       }
       else{
         console.log('삭제할 수 없습니다.')
@@ -56,6 +55,8 @@ client.on('message', (topic, message, packet) => {
             console.log(user[0].user_id)
             _db.delete('user', `user_id =${user[0].user_id}` )
             console.log('디비에서 삭제 되었습니다. id : ' + user[0].user_id)
+             //모델 재학습
+            client.publish('reTrain', '')
           }
      
         })

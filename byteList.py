@@ -22,3 +22,4 @@ def load_image(directory):
         byteArr.append(bytearray(filecontent))
     return byteArr
         
+                                                                                                            
