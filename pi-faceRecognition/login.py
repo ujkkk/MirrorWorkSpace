@@ -5,7 +5,7 @@ from numpy import savez_compressed
 from dataPreProcess import load_dataset
 from dataPreProcess import embedding
 import os.path 
-from crop import createCropImage
+from camera import createCropImage
 import os
 
 def login(embeddingModel):

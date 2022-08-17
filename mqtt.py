@@ -1,8 +1,8 @@
 from re import T
 import paho.mqtt.client as mqtt
-from crop import createCropImage
+from camera import createCropImage
 import os
-import crop
+import camera
 global client
 
 curDir = os.path.dirname(os.path.realpath(__file__))
@@ -31,7 +31,7 @@ def on_message(client, userdata, msg):
     print("payload : " + str(message))
 
     if(msg.topic == 'closeCamera'):
-        crop.closeCam()
+        camera.closeCam()
     #삭제 버튼 누른 유저가 삭제할 수 있는지 얼굴인식 서버에게
     #로그인 해서 id 가져오기
     elif(msg.topic =='delete/camera'):
@@ -69,6 +69,7 @@ client.loop_start()
 
 
 
+
 # 디렉토리 안의 모든 이미지를 불러오고 이미지에서 얼굴 추출
 def load_image(directory):
     byteArr = list()
@@ -83,6 +84,7 @@ def load_image(directory):
         
 #로그인하기 위해 사진찍기 시작
 def Camera_login(count):
+    camera.onCam()
     print('while - loginCamera')
     # 카메라로 사진 찍어서 얼굴부분만 크롭해서 저장
     dir_name1 = os.path.join('face','login')
@@ -96,7 +98,7 @@ def Camera_login(count):
 
 
 def Camera_createAccount(username, count):
-   
+    camera.onCam()
     # 사진 넘겨주기
     imagelist = load_image(dir_name2)
     for i in range(count) :

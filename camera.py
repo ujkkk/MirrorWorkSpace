@@ -1,12 +1,23 @@
+from asyncio.windows_events import NULL
 from genericpath import exists
+from logging import NullHandler
 import cv2
 import os
 import os.path
 
 face_classifier = cv2.CascadeClassifier(cv2.data.haarcascades +'haarcascade_frontalface_default.xml')
-cam=cv2.VideoCapture(0)
-cam.set(cv2.CAP_PROP_FRAME_WIDTH, 500)
-cam.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+cam = NULL
+
+def onCam():
+    if not (cam):
+        cam=cv2.VideoCapture(0)
+        cam.set(cv2.CAP_PROP_FRAME_WIDTH, 500)
+        cam.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+
+def closeCam():
+    cam.release()
+    cam = NULL
+    cv2.destroyAllWindows()
 
 def face_extractor(img):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -22,12 +33,10 @@ def face_extractor(img):
 
     return cropped_face
 
-def closeCam():
-    cam.release()
-    cv2.destroyAllWindows()
+
 
 def createCropImage(userName, dir_path, countN):
-    
+    onCam()
     #print("현재 위치" + str(os.getcwdb()))
     dir_path = os.path.join(dir_path, userName)
     #폴더 생성

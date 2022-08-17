@@ -1,0 +1,263 @@
+<html>
+    <head>
+        <title>Login & Sign up</title>
+        <meta charset="utf-8">
+        <style>
+             html,
+            body {
+                width: 100%;
+                height: 100%;
+                background-color: black;
+            }
+            label{
+                color : white;
+            }
+            .container {
+                position:relative;
+
+                top: 30%;
+                
+                text-align: center;
+                /* margin-top: 50%; */
+            }
+
+ 
+            .btnDiv{
+                margin: 1%;
+            }
+            .btn{
+                
+                width: 70px;
+                height: 30px;
+                /* padding: 10px; */
+                border: solid 1px white;
+                border-radius:10%;
+                background-color:rgb(0, 0, 0);
+                color: white;
+                /* font-size: 5vw; */
+                /* font-size: xx-large;
+                /* font-weight: bold; */
+                /* font-family: 'Do Hyeon', sans-serif; */
+            }
+            input {
+                vertical-align: middle;
+            }
+            input.form-text {
+                border: 1px solid #bcbcbc;
+                height: 28px;
+            }
+            input.img-button {
+                background: url( "../image/dod.png" ) no-repeat;
+                border-radius: 20%;
+                border: none;
+                width: 32px;
+                height: 32px;
+                cursor: pointer;
+            }
+            #confirm{
+                
+                height: 20vh;
+                visibility:hidden;
+                border: 1px solid #bcbcbc;
+            }
+            #confirm-btnDiv{
+                display: inline-block;
+                margin: 1%;
+            }
+            #add{
+                width: 70px;
+                height: 30px;
+                /* padding: 10px; */
+                border: solid 3px rgb(35, 99, 229);
+                border-radius: 10%;
+                background-color:rgb(35, 99, 229);
+                color: rgb(228, 237, 253);
+                border: solid 1px white;
+            }
+            th{
+                color: white;
+                border: 1px solid #ffffff;
+            }
+            td{
+                text-align: center;
+               
+            }
+            tr{
+                align-content: center;
+                color: white;
+                
+            }
+            table {
+                
+                border: 1px solid #ffffff;
+            }
+            .row{
+                margin-top: 100px;
+            }
+        </style>
+               
+    </head>
+    <body>
+        <div class="container">  
+            
+            <div id = 'confirm'>
+                <form>
+                    <p>
+                      <input type="text" class="form-text" id="id_content">
+                      <input type="button" class="img-button" onclick="userCheck()">
+                    </p>
+                </form>
+                <div id = 'confirm-btnDiv'>
+                    <button id ='add' class ='btn' onclick="addFriendDB()">추가</button>
+                    <button id='stop' class ='btn' onclick="hiddenPopup()">취소</button>
+                    <div id = text style='color:#738df4;'></div>
+                </div>
+                
+                
+            </div>
+            
+            <div class="row">
+                <table id="table-1" width="100%" class="table table-bordered table-hover text-center">
+                    <thead>
+                        <tr>
+                            <th>이름</th>
+                            <th>id</th>
+                        </tr>
+                    </thead>
+                    <tbody id ='htmlTbody'>				
+                        
+                    </tbody>
+                </table>
+                <div class="btnDiv" id="loginDiv">
+                    <button class="btn" id="deleteBtn" onclick="showPopup()">+</button>
+                    <!-- <button class="returnBtn" onclick="returnToLogin()">Return</button> -->
+                </div>
+            </div>
+
+                
+            
+            
+           
+        </div>
+
+        <script>
+
+            server_db = require('../server_db');
+            mirror_db = require('../mirror_db');
+            let add_name = null;
+            let add_id = null;
+            let id =null;
+            let ids = new Array()
+            let names = new Array()
+           
+            window.onload = getUserInfo();
+
+            function hiddenPopup(){
+                document.getElementById('confirm').style.visibility ='hidden';
+                document.getElementById('text').innerHTML ='';
+                document.getElementById('id_content').value = '';
+            }
+            function showPopup(){
+                document.getElementById('confirm').style.visibility ='visible';
+            }
+            function getUserInfo(){
+               
+                mirror_db.select('*', 'friend', 'id is not null')
+               .then(users =>{
+                   users.forEach(user => {
+                       console.log('id : ' + user.id)
+                       ids.push(user.id)
+                       names.push(user.name)
+                       
+                   });
+                   createTable(ids, names)
+               })
+           }
+           function createTable(ids, names){
+                const hTbody = document.getElementById('htmlTbody');
+                hTbody.innerHTML =''
+                count =0;
+                names.forEach(name =>{
+                    id = ids[count++];
+                    let tr = document.createElement("tr")
+                    let td = document.createElement("td")
+                    td.innerHTML = name
+                    tr.appendChild(td)
+
+                    let td2 = document.createElement("td")
+                    td2.innerHTML = id
+                    tr.appendChild(td2)
+
+                    hTbody.appendChild(tr)
+       
+                    console.log(hTbody)
+                    //hTbody.innerHTML += '<tr>' + newCell0 + '</tr>'
+                }); 
+               
+                
+            }
+           //검색한 유저가 존재하는지 server DB에서 확인
+           function userCheck(){
+                id = document.getElementById('id_content').value;
+                if(id == null || id=='')
+                    return;
+
+
+                //친구 목록에 있는지 확인
+                mirror_db.select('name', 'friend', `id=${id}`)
+                .then(values =>{
+                    //친구목록에 이미 추가된 유저이면 추가 안함
+                    if(values.length>0){
+                        document.getElementById('text').innerHTML = `<h3>이미 등록된 유저입니다.</h3>`
+                        id = null
+                        add_id = null;
+                        add_name = null;
+                        return;
+                    }
+                    server_db.select('name','user',`id=${id}`)
+                    .then(user =>{
+                        //서버 디비에 등록된 유저일 때 
+                        if( user.length > 0){
+                            name = String(user[0].name);
+                            document.getElementById('text').innerHTML = `<h3>'${name}'</h3>`
+
+                            add_id = id;
+                            add_name = name;
+                        } else{
+                            document.getElementById('text').innerHTML = `<h3>존재하지 않습니다.</h3>`
+                            add_id = null;
+                            add_name = null;
+                        }
+                    })
+
+                })
+
+            
+            }
+
+            //추가 버튼을 클릭하면 on
+           function addFriendDB(){
+                console.log('add_id : ' +add_id +  ', add_name: ' +add_name);
+                if(add_id != null && add_name != null){
+                    var data = {id: add_id, name: add_name};
+                    mirror_db.createColumns('friend', data)
+                    .then(result => {
+                        if (result) {
+                            document.getElementById('text').innerHTML = `<h3>추가 되었습니다.</h3>`
+                            add_id = null;
+                            add_name =null;
+                        }
+                        else {
+                            reject(null);
+                            document.getElementById('text').innerHTML = `<h3>추가 하지 못헀습니다.</h3>`
+                        }
+                    });
+                    
+                }
+                else{
+                    document.getElementById('text').innerHTML = `<h3>추가할 수 없습니다.</h3>`;
+                }
+           }
+        </script>
+    </body>
+</html>

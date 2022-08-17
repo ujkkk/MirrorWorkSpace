@@ -23,25 +23,29 @@ const getDataFromFilePromise = (filePath) => {
     });
   });
 }
+
 client.subscribe("capture/byteFile");
-client.subscribe("capture")
+client.subscribe("capture/camera_done");
 
 client.on('message', async (topic, message, packet) => {
     console.log("message is "+ message);
     console.log("topic is "+ topic);
     let data1
 
-    if(topic == 'capture'){
-      document.location.href = './message'
-    }
-    //전송할 사진 찍기가 완료되면 받음
-    //msg는 이미지의 바이트 코드
-    if(topic == 'capture/byteFile'){
-      filePath = 'media/test.jpg'
- 
+  
+    if(topic == 'capture/camera_done'){
+
+      console.log("capture/camera_done 토픽 받음")
+      var saved_filePath = message
+      
+      document.location.href = './imageSend2.html'
       var c = document.createElement('canvas');
-      var img = document.getElementById('Img1');
-      img.src = filePath 
+      var img = document.getElementById('message-img');
+
+      var time = new Date().getTime();
+      img.src = saved_filePath +'?time='+ time;
+     
+      console.log(' img.src : ' + img.src)
       //c.height = img.naturalHeight;
       //c.width = img.naturalWidth;
       var ctx = c.getContext('2d');
@@ -49,23 +53,35 @@ client.on('message', async (topic, message, packet) => {
       ctx.drawImage(img, 0, 0, c.width, c.height);
       var base64String = c.toDataURL();
       console.log(base64String)
-            // fs.open('messegeSend/media/test.jpg', "r+", (error, fd) =>{
-      //   fs.readFile('messegeSend/media/test.jpg','utf8', function(error, data) {
-      //     if(error){
-      //       //response.writeHead(500, {'Content-Type':'text/html'});
-      //       console.log('500 Internal Server '+error);
-      //     }else{
-      //       // 6. Content-Type 에 4번에서 추출한 mime type 을 입력
-      //       data1 = data.toString(8);
-      //       console.log('data1 : ' +data1);
-      //     }
-      //   });
-      // })
+     
+      
+    }
+    //전송할 사진 찍기가 완료되면 받음
+    //msg는 이미지의 바이트 코드
+    if(topic == 'capture/byteFile'){
+      
+      receiver = document.getElementById('message-receiver').value;
+      sender = document.getElementById('message-sender').value;
+      img = document.getElementById('message-img')
+
+      var c = document.createElement('canvas');
+      var ctx = c.getContext('2d');
+      c.width = 550;
+      c.height = 480;
+      ctx.drawImage(img, 0, 0, c.width, c.height);
+      var base64String = c.toDataURL();
+      console.log(base64String);
+
+      Blob
+      var url = window.URL.createObjectURL(blob);
+
        
       axios({
         url: 'http://localhost:3000/send/images', // 통신할 웹문서
         method: 'post', // 통신할 방식
         data: { // 인자로 보낼 데이터
+          receiver : receiver,
+          sender : sender,
           content: base64String
         }
       });

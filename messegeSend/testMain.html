@@ -48,45 +48,35 @@
                 color: gray;
                 background-color: white;
             }
-            .input-file-button{
-                padding: 6px 25px;
-                background-color:#292626;
-                border: solid 1px white;
-                border-radius: 4px;
-                color: white;
-                cursor: pointer;
-            }
-            #message-content{
-                display: none;
-            }
+
+
         </style>
     </head>
     <body>
         <div class="container">  
-            <div class ="message">
-                <form id ="media-form" action="/send/vedio" method="post" enctype="multipart/form-data">
-                    <div class ="input-group">
-                        <label for="message-receiver">받는 사람</label>
-                        <input id="message-receiver" type="text" name="receiver" ></div>
-                    <div class ="input-group">
-                        <label class="input-file-button" for="message-content">보낼 파일</label>
-                        <input id="message-content" type="file" name="video" >
-                    </div>
-                    <div class ="input-group">
-                        <input id ="sender" type="hidden" value="001001" name="sender"></div>   
-                    </div>
-                    <div class="btnDiv" id="sendDiv"> 
-                        <button class="btn" id="sendBtn" type="submit">send</button>
-                    </div>
-                </form>
-
+            <div class="capture">
+                <div class="btnDiv" id="captureDiv">
+                    <button class="btn" id="btn" type="button" onclick="onCamera()">메시지 보내기(사진)
+                   </button>
+                </div>
             </div>
             
            
         </div>
 
         <script>
-            
+            const client = require("./mqtt");
+         
+             function onCamera(){
+            //     //사진 찍기
+                 console.log('카메라 활성화');
+                 //카메라 키기
+                 client.publish('camera/on',"start");
+                 //frame 돌고 있기
+                 
+                 document.location.href='imageSend1.html'
+
+             }
         </script>
     </body>
 </html>

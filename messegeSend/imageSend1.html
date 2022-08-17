@@ -73,9 +73,9 @@
             
            
         </div>
-       
+
         <script>
-             const client = require("./mqtt");
+            const client = require("./mqtt");
            function down() {
                 document.getElementById("label-img").src = "./images/on_camera.png";
             }
@@ -86,7 +86,9 @@
              function captureStart(){
             //     //사진 찍기
                  console.log('사진찍기 함수 호출');
-                 client.publish('capture',"start");
+                 //사진찍기
+                 client.publish('capture/camera',"start");
+                 
 
              }
         </script>

@@ -16,7 +16,8 @@ function createWindow() {
     const win = new BrowserWindow(options);
     
     //win.webContents.openDevTools();  
-    win.loadFile("messegeSend/imageSend1.html");
+    //win.loadFile("addFriend/list.html");
+    win.loadFile("addFriend/list.html");
 }
 
 app.whenReady().then(() => {
