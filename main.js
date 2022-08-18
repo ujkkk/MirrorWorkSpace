@@ -17,7 +17,8 @@ function createWindow() {
     
     //win.webContents.openDevTools();  
     //win.loadFile("addFriend/list.html");
-    win.loadFile("addFriend/list.html");
+    //win.loadFile("addFriend/list.html");
+    win.loadFile("messegeSend/testMain.html");
 }
 
 app.whenReady().then(() => {

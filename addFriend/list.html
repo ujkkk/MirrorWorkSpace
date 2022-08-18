@@ -56,15 +56,16 @@
             }
             #confirm{
                 
-                height: 20vh;
-                visibility:hidden;
+                height: 20vsh;
+                visibility: hidden;
                 border: 1px solid #bcbcbc;
+                margin: 5%;
             }
             #confirm-btnDiv{
                 display: inline-block;
                 margin: 1%;
             }
-            #add{
+            .addBtn{
                 width: 70px;
                 height: 30px;
                 /* padding: 10px; */
@@ -100,23 +101,25 @@
     <body>
         <div class="container">  
             
+    
             <div id = 'confirm'>
-                <form>
-                    <p>
-                      <input type="text" class="form-text" id="id_content">
-                      <input type="button" class="img-button" onclick="userCheck()">
-                    </p>
-                </form>
-                <div id = 'confirm-btnDiv'>
-                    <button id ='add' class ='btn' onclick="addFriendDB()">추가</button>
-                    <button id='stop' class ='btn' onclick="hiddenPopup()">취소</button>
-                    <div id = text style='color:#738df4;'></div>
-                </div>
                 
+                    <form>
+                        <p>
+                        <input type="text" class="form-text" id="id_content" onclick="focusOn()">
+                        <input type="button" class="img-button" onclick="userCheck()">
+                        </p>
+                    </form>
+                    <div id = 'confirm-btnDiv'>
+                        <button id ='addBtn' class ='addBtn' onclick="addFriendDB()">추가</button>
+                        <button id='stopBtn' class ='btn' onclick="hiddenPopup()">취소</button>
+                        <div id = text style='color:#738df4;'></div>
+                    </div>
+               
                 
             </div>
             
-            <div class="row">
+            <div class="user-table">
                 <table id="table-1" width="100%" class="table table-bordered table-hover text-center">
                     <thead>
                         <tr>
@@ -129,7 +132,8 @@
                     </tbody>
                 </table>
                 <div class="btnDiv" id="loginDiv">
-                    <button class="btn" id="deleteBtn" onclick="showPopup()">+</button>
+                    <button class="btn"  onclick="showPopup()">+</button>
+                    <button class="addBtn" id="deleteBtn" onclick="deleteUser()">삭제</button>
                     <!-- <button class="returnBtn" onclick="returnToLogin()">Return</button> -->
                 </div>
             </div>
@@ -140,18 +144,25 @@
            
         </div>
 
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+       
         <script>
 
             server_db = require('../server_db');
             mirror_db = require('../mirror_db');
             let add_name = null;
             let add_id = null;
+            let delete_id =null;
+            let delete_name = null;
             let id =null;
-            let ids = new Array()
-            let names = new Array()
+            
            
             window.onload = getUserInfo();
 
+            function focusOn(){
+                console.log('focusOn');
+                document.getElementById('id_content').focus();
+            }
             function hiddenPopup(){
                 document.getElementById('confirm').style.visibility ='hidden';
                 document.getElementById('text').innerHTML ='';
@@ -161,7 +172,8 @@
                 document.getElementById('confirm').style.visibility ='visible';
             }
             function getUserInfo(){
-               
+                let ids = new Array();
+                let names = new Array();
                 mirror_db.select('*', 'friend', 'id is not null')
                .then(users =>{
                    users.forEach(user => {
@@ -173,6 +185,22 @@
                    createTable(ids, names)
                })
            }
+           //해당 행을 선택하면 색상이 바뀌는 이벤트 함수
+           function HighLightTR(target) {
+                console.log('하이라이트 호출')
+                    //var tbody = document.getElementById('')
+                    var trs = document.getElementsByTagName('tr')
+                    for ( var i = 0; i < trs.length; i++ ) {
+                        if ( trs[i] != target ) {
+                        trs[i].style.backgroundColor = '#000000';
+                        trs[i].style.color = '#ffffff';
+                        } else {
+                    trs[i].style.backgroundColor = '#ffffff';
+                    trs[i].style.color = '#000000';
+                    }
+                } // endfor i
+            }
+            
            function createTable(ids, names){
                 const hTbody = document.getElementById('htmlTbody');
                 hTbody.innerHTML =''
@@ -187,16 +215,16 @@
                     let td2 = document.createElement("td")
                     td2.innerHTML = id
                     tr.appendChild(td2)
-
+                    tr.setAttribute('onClick', "HighLightTR(this)")
                     hTbody.appendChild(tr)
        
                     console.log(hTbody)
                     //hTbody.innerHTML += '<tr>' + newCell0 + '</tr>'
                 }); 
-               
+                rowEvent();
                 
             }
-           //검색한 유저가 존재하는지 server DB에서 확인
+           
            function userCheck(){
                 id = document.getElementById('id_content').value;
                 if(id == null || id=='')
@@ -214,6 +242,8 @@
                         add_name = null;
                         return;
                     }
+
+                    //친구목록에 없는 유저를 추가할 때
                     server_db.select('name','user',`id=${id}`)
                     .then(user =>{
                         //서버 디비에 등록된 유저일 때 
@@ -244,6 +274,7 @@
                     .then(result => {
                         if (result) {
                             document.getElementById('text').innerHTML = `<h3>추가 되었습니다.</h3>`
+                            getUserInfo();
                             add_id = null;
                             add_name =null;
                         }
@@ -258,6 +289,46 @@
                     document.getElementById('text').innerHTML = `<h3>추가할 수 없습니다.</h3>`;
                 }
            }
+
+           function rowEvent(){
+             // 테이블의 Row 클릭시 값 가져오기
+            $("#table-1 tr").mousedown(function(){ 	
+
+                // 현재 클릭된 Row(<tr>)
+                var tr = $(this);
+                var td = tr.children();
+
+                // tr.text()는 클릭된 Row 즉 tr에 있는 모든 값을 가져온다.
+                console.log("클릭한 Row의 모든 데이터 : "+tr.text());
+
+                // td.eq(index)를 통해 값을 가져올 수도 있다.
+                delete_id =  td.eq(1).text();
+                delete_name = td.eq(0).text();
+                console.log('change deleteName : '+ id)
+
+            });
+            
+        }
+        //삭제버튼을 누르면 freind db에서 삭제
+        function deleteUser(){
+                if(delete_id != null){
+                    if (confirm(`'${delete_name}'님을 삭제 하시겠습니까?`)) {
+                        mirror_db.delete('friend', `id = ${delete_id}`)
+                        .then(value =>{
+                            //테이블 갱신
+                            $('#table-1 > tbody').empty();
+                            delete_id = null;
+                            delete_name = null;
+                            getUserInfo();
+                        })
+                        return;
+                    } else {
+                        return;
+                    }
+                   
+               
+                }
+            }
         </script>
     </body>
 </html>

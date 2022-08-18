@@ -72,9 +72,7 @@ client.on('message', async (topic, message, packet) => {
       var base64String = c.toDataURL();
       console.log(base64String);
 
-      Blob
-      var url = window.URL.createObjectURL(blob);
-
+  
        
       axios({
         url: 'http://localhost:3000/send/images', // 통신할 웹문서
