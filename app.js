@@ -24,7 +24,7 @@ axios.get(`http://localhost:9000/check/${mirrorDB.userId}`)
                     dbAccess.addMemo(mirrorDB.userId,sender,contents,1);
             }
             else if(datas[i].type == "image"){
-                let sender= 2002;
+                let sender= data[i].sender;
                 //서버에 저장되어 있는 파일명을 받아오기
                 let fileName = datas[i].content
                 //let fileName = '1660840019907.txt';

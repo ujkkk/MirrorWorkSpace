@@ -18,7 +18,8 @@ function createWindow() {
     //win.webContents.openDevTools();  
     //win.loadFile("addFriend/list.html");
     //win.loadFile("addFriend/list.html");
-    win.loadFile("messegeSend/testMain.html");
+    win.loadFile("message_module/message.html");
+    //win.loadFile("message_module/messegeSend/testMain.html");
 }
 
 app.whenReady().then(() => {

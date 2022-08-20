@@ -4,6 +4,7 @@ body{
 	justify-content: center;
 	align-items: center;
 	height: 100vh;
+	width: 100vw;
 	background-color: #111; 
 }
 .keyboard-container{
@@ -28,4 +29,8 @@ div input[type="button"] {
 	color: #fff;
 	text-shadow: 0 0 10px rgba(33,156,243,.8),
 				 0 0 20px rgba(33,156,243,1);
+}
+
+.line{
+	margin:2%;
 }
