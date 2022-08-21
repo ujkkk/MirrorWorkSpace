@@ -75,7 +75,7 @@
                         <img id='message-img' src='./media/test.jpg' width="550px">
                     </div>
                     <div class ="input-group">
-                        <input id ="message-sender" type="hidden" value="001001" name="sender"></div> 
+                        <input id ="message-sender" type="hidden" value="1001" name="sender"></div> 
                         <label for="message-receiver">받는 사람</label>
                         <input id="message-receiver" type="text" name="receiver" ></div>
                     <div class ="input-group">
@@ -94,7 +94,7 @@
        
         <script>
            
-            const client = require("./mqtt");
+            const client = require("../mqtt");
             function reCamera(){
                 document.location.href = "imageSend1.html";
             }
@@ -102,7 +102,7 @@
             function send(){
                 if(document.getElementById('message-receiver').value != null &&
                 (document.getElementById('message-receiver').value != '')){
-                    client.publish('capture/byteFile', 'send');
+                    client.publish('send/image', 'send');
                     document.getElementById('textDiv').innerHTML = "<h3>전송 되었습니다.</h3>";
                     setTimeout(1500, ()=>{
                         client.publish('camera/close', 'ok')

@@ -174,7 +174,9 @@
             function getUserInfo(){
                 let ids = new Array();
                 let names = new Array();
-                mirror_db.select('*', 'friend', 'id is not null')
+                //
+                myid = 1001;
+                mirror_db.select('*', 'friend', `id is not null && id=${myid}`)
                .then(users =>{
                    users.forEach(user => {
                        console.log('id : ' + user.id)

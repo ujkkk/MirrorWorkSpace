@@ -44,13 +44,13 @@ function message_detail(msg_id){
                 detail_content_div.innerHTML = `${selected_msg.content}`;
                 break;
             case 'image' :
-                
+                image_forlder = '../image/message/'
                 detail_content_div.innerHTML ='';
                 let img = document.createElement('img');
                 img.setAttribute('id', 'image');
                 img.setAttribute('width', '70px');
                 img.setAttribute('height', '70px');
-                img.src = selected_msg.content;
+                img.src = image_forlder + selected_msg.content;
                 detail_content_div.appendChild(img);
 
         }
@@ -60,38 +60,45 @@ function message_detail(msg_id){
 
 //해당 함수 호출시 미러 내 message DB에서 메시지를 가져와 나에게 온 메세지를 띄움
 function initMessages(){
-    
-    let message_contents = document.getElementById('message-contents');
-    console.log(message_contents);
+
     mirror_db.select('*','message', `receiver = ${my_id}`)
     .then(messages =>{
-        messages.forEach(message =>{
-
-            let messageContent = document.createElement('div');
-            messageContent.setAttribute('class','message-content');
-            messageContent.setAttribute('value',message.msg_id);
-            messageContent.setAttribute('onclick',`message_detail(${message.msg_id})`);
-        
-  
-           mirror_db.select('name','friend',`id=${message.sender}`)
-            .then(sender =>{
-                let content;
-                if(message.type == 'text')
-                    content = message.content;
-                else if(message.type == 'image')
-                    content = '(이미지)';
-                else if(message.type == 'record')
-                    content = '(음성 메시지)';
-
-                console.log("sender_name: "+ sender[0].name);
-
-                messageContent.innerHTML=`[${sender[0].name}] ${content}`
-                message_contents.appendChild(messageContent);
-            })
-            
-        })
+        messages.forEach(message =>{insertMessageContent(message); })
     })
 }
 
+function insertMessageContent(message){
+    let message_contents = document.getElementById('message-contents');
+    let messageContent = document.createElement('div');
+    messageContent.setAttribute('class','message-content');
+    messageContent.setAttribute('value',message.msg_id);
+    messageContent.setAttribute('onclick',`message_detail(${message.msg_id})`);
 
-module.exports = {initMessages};
+
+   mirror_db.select('name','friend',`id=${message.sender}`)
+    .then(sender =>{
+        let content;
+        if(message.type == 'text')
+            content = message.content;
+        else if(message.type == 'image')
+            content = '(이미지)';
+        else if(message.type == 'record')
+            content = '(음성 메시지)';
+
+        console.log("sender_name: "+ sender[0].name);
+
+        messageContent.innerHTML=`[${sender[0].name}] ${content}`
+        message_contents.appendChild(messageContent);
+    })
+}
+//메시지가 새로 와서 메시지함을 갱신하는 함수
+function insertNewMessage(){
+    mirror_db.select('*','message', `receiver = ${my_id}`)
+    .then(messages =>{
+        //가장 마지막에 추가된 메시지 가져오기
+        // id로 하는게 낫나?
+        message = messages[length -1];
+        insertMessageContent(message);
+    })
+}
+module.exports = {initMessages, insertNewMessage};

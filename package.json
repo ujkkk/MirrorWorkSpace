@@ -11,11 +11,13 @@
   "license": "ISC",
   "dependencies": {
     "@electron/remote": "^0.0.1",
+    "@types/socket.io-client": "^3.0.0",
     "axios": "^0.27.2",
     "electron": "^6.1.12",
     "fs": "^0.0.1-security",
     "mqtt": "^4.3.7",
     "mysql": "^2.18.1",
-    "node-record-lpcm16": "^1.0.1"
+    "node-record-lpcm16": "^1.0.1",
+    "socker.io": "^0.0.0-alpha-beta"
   }
 }

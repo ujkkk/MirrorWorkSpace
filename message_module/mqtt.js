@@ -1,6 +1,7 @@
 const mqtt = require('mqtt');
 const axios= require('axios');
 const fs = require('fs')
+const socket = require('./socket')
 const options = {
     host: '127.0.0.1',
     port: 1883
@@ -24,7 +25,7 @@ const getDataFromFilePromise = (filePath) => {
   });
 }
 
-client.subscribe("capture/byteFile");
+client.subscribe("send/image");
 client.subscribe("capture/camera_done");
 
 client.on('message', async (topic, message, packet) => {
@@ -56,9 +57,8 @@ client.on('message', async (topic, message, packet) => {
      
       
     }
-    //전송할 사진 찍기가 완료되면 받음
-    //msg는 이미지의 바이트 코드
-    if(topic == 'capture/byteFile'){
+    //전송하기 누르면 호출되는 이벤트
+    if(topic == 'send/image'){
       
       receiver = document.getElementById('message-receiver').value;
       sender = document.getElementById('message-sender').value;
@@ -70,19 +70,35 @@ client.on('message', async (topic, message, packet) => {
       c.height = 480;
       ctx.drawImage(img, 0, 0, c.width, c.height);
       var base64String = c.toDataURL();
-      console.log(base64String);
+     // console.log(base64String);
 
-  
-       
-      axios({
-        url: 'http://localhost:9000/send/images', // 통신할 웹문서
-        method: 'post', // 통신할 방식
-        data: { // 인자로 보낼 데이터
-          receiver : receiver,
-          sender : sender,
-          content: base64String
-        }
-      });
+     var date = new Date().getDate
+      var filename =   new Date().getTime() +'.jpg';
+      var sender_connent = true
+      //접속되어 있는 유저에게 보낼 때, 소켓 이용
+      if(sender_connent){
+        socket.emit('realTime/message', {
+            sender : sender,
+            receiver :  receiver,
+            content : base64String,
+            type : 'image',
+            time : date
+        });
+
+        
+      }
+      else{
+        axios({
+          url: 'http://localhost:9000/send/images', // 통신할 웹문서
+          method: 'post', // 통신할 방식
+          data: { // 인자로 보낼 데이터
+            receiver : receiver,
+            sender : sender,
+            content: base64String
+          }
+        });
+      }
+      
      // document.getElementById('content').value = byteFile   
     }
 })

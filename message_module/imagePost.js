@@ -23,7 +23,7 @@ axios({
 .then( response => new Promise((resolve, reject) =>{
   console.log(response);
     time = new Date().getTime();
-    var file =  '../image/server/' + time + '.jpg';
+    var file =  time + '.jpg';
     url = response.data;
    
     var bstr = atob(url);
