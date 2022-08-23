@@ -12,7 +12,8 @@ var pool = mysql.createPool({
     user: 'root',
     password: '1234',
     database: 'mirror_db',
-    debug: false
+    debug: false,
+    dateStrings : 'date'
 });
 
 
@@ -164,7 +165,7 @@ const addUser = (name) => new Promise((resolve, reject) => {
     createColumns('user', data)
         .then(result => {
             if (result) {
-                selectColumns('user_id', 'user', `name='${name}'`)
+                selectColumns('id', 'user', `name='${name}'`)
                     .then(value => {
                         console.log('dv: ' + parseInt(value[value.length - 1].user_id));
                         resolve(String(value[value.length - 1].user_id));

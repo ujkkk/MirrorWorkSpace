@@ -66,7 +66,7 @@ def createImage():
     # 기본 카메라 객체 생성
     global cam
     #cam = cv2.VideoCapture(0)
-    cv2.namedWindow('frame')
+    #cv2.namedWindow('frame')
     #cv2.setMouseCallback('frame', on_mouse)
     # 열렸는지 확인
     if not cam.isOpened():

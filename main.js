@@ -17,9 +17,10 @@ function createWindow() {
     
     //win.webContents.openDevTools();  
     //win.loadFile("addFriend/list.html");
-    win.loadFile("addFriend/list.html");
+    //.loadFile("addFriend/list.html");
     //win.loadFile("keyboard/keyboard-kr.html");
-    //win.loadFile("message_module/messegeSend/imageSend2.html");
+    win.loadFile("message_module/messegeSend/testMain.html");
+   //win.loadFile("message_module/message.html");
 }
 
 app.whenReady().then(() => {

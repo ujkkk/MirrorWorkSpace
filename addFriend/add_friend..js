@@ -17,7 +17,7 @@ function getUserInfo(){
        users.forEach(user => {
            console.log('id : ' + user.id)
            ids.push(user.friend_id)
-           names.push(user.name)
+           names.push(user.friend_id_name)
            
        });
        createTable(ids, names)
@@ -75,7 +75,7 @@ function userCheck(){
     }
 
     //친구 목록에 있는지 확인
-    mirror_db.select('name', 'friend', `friend_id=${friend_id}`)
+    mirror_db.select('*', 'friend', `friend_id=${friend_id}`)
     .then(values =>{
         //친구목록에 이미 추가된 유저이면 추가 안함
         if(values.length>0){

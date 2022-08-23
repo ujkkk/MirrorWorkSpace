@@ -1,7 +1,9 @@
 const mqtt = require('mqtt');
 const axios= require('axios');
+const mirror_db = require('../mirror_db');
+require('date-utils');
 const fs = require('fs')
-const socket = require('./socket')
+const socket = require('./message_socket')
 const options = {
     host: '127.0.0.1',
     port: 1883
@@ -66,15 +68,18 @@ client.on('message', async (topic, message, packet) => {
 
       var c = document.createElement('canvas');
       var ctx = c.getContext('2d');
-      c.width = 550;
+      c.width = 600;
       c.height = 480;
       ctx.drawImage(img, 0, 0, c.width, c.height);
       var base64String = c.toDataURL();
      // console.log(base64String);
 
-     var date = new Date().getDate
-      var filename =   new Date().getTime() +'.jpg';
-      var sender_connent = true
+      // var date = new Date().getDate
+      // var filename =   new Date().getTime() +'.jpg';
+
+      var newDate = new Date();
+      var time = newDate.toFormat('YYYY-MM-DD HH24:MI:SS');
+      var sender_connent = false;
       //접속되어 있는 유저에게 보낼 때, 소켓 이용
       if(sender_connent){
         socket.emit('realTime/message', {
@@ -82,19 +87,24 @@ client.on('message', async (topic, message, packet) => {
             receiver :  receiver,
             content : base64String,
             type : 'image',
-            time : date
+            time : time
         });
 
         
       }
       else{
+        var newDate = new Date();
+        var time = newDate.toFormat('YYYY-MM-DD HH24:MI:SS');
         axios({
-          url: 'http://localhost:9000/send/images', // 통신할 웹문서
+          url: 'http://localhost:9000/send/image', // 통신할 웹문서
           method: 'post', // 통신할 방식
           data: { // 인자로 보낼 데이터
             receiver : receiver,
             sender : sender,
-            content: base64String
+            content: base64String,
+            type :'image',
+            send_time : time
+
           }
         });
       }

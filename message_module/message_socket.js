@@ -1,6 +1,7 @@
 
 const { io } = require("socket.io-client");
 const fs = require('fs');
+const mirror_db = require('../mirror_db');
 //npm install @types/socket.io-client --save
 
 var socket = io('http://localhost:9000/', { transports : ['websocket'] });
@@ -13,7 +14,7 @@ socket.on("connect", () => {
 
 
 //나에게 서버로부터 메시지가 올 때
-socket.on(`${my_id}`, req => {
+socket.on(`${mirror_db.getId()}`, req => {
     console.log(req);
 
     switch (req.type){

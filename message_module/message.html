@@ -1,86 +1,38 @@
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="./message.css" />
-        <!-- <script src="./index.js"></script> -->
-        <title>Document</title>
-    </head>
-    <body>
-        <div class="container">
-          <div class="message-box"> 
-            <div id="parent">
-                <div class = 'text-div' id="message-text-div">Message</div>
-                <div id= 'message-contents'></div>
-            </div>
-          </div>    
 
-          <div id="message-detail-box">
-             <div id = "message-detail-div">
-                <div id="message-sender"></div>
-                <div id ="message-content"></div>
-                <div id="message-time"></div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="./message.css" />
+  <!-- <script src="./index.js"></script> -->
+  <title>Document</title>
+</head>
 
-            </div>
-          </div>
+<body>
+  <div class="container">
+    
+    <div class="message-box">
+      <div id="parent">
+        <div class='text-div' id="message-text-div">Message</div>
+        <div id='message-contents'></div>
+      </div>
+    </div>
 
-         
-        </div>
-        </d<html>
-          <head>
-              <meta charset="UTF-8" />
-              <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-              <link rel="stylesheet" href="./message.css" />
-              <!-- <script src="./index.js"></script> -->
-              <title>Document</title>
-          </head>
-          <body>
-              <div class="container">
-                <div id="slider-wrap">
-                  <div class="message-box"> 
-                    <div id="parent">
-                        <div class = 'text-div' id="message-text-div">Message</div>
-                        <ul id="slider"> <div id= 'message-contents'></div></ul>
-                        
-                        
-                    </div>
-                  </div>    
-                  
-                  <div class="slider-btns" id="next"><span>▶</span></div>
-                  <div class="slider-btns" id="previous"><span>◀</span></div>
-              
-                  <!-- <div id="slider-pagination-wrap">
-                      <ul>
-                      </ul>
-                  </div> -->
-                </div>
-                <div id="message-detail-box">
-                   <div id = "message-detail-div">
-                      <div id="message-sender"></div>
-                      <div id ="message-content"></div>
-                      <div id="message-time"></div>
-      
-                  </div>
-                </div>
-              </div>
-              </div>
-              <!-- <script src="./imagePost.js"></script> -->
-              <script src="./message.js"></script>
-              <script src="./socket.js"></script>
-              <script>    
-             
-                  message = require('./message');
-                  window.onload = message.initMessages()
-              </script>
-            </body>
-      </html>iv>
-        <!-- <script src="./imagePost.js"></script> -->
-        <script src="./message.js"></script>
-        <script src="./socket.js"></script>
-        <script>    
-       
-            message = require('./message');
-            window.onload = message.initMessages()
-        </script>
-      </body>
-</html>
+    <div id="message-detail-box">
+      <div id="message-detail-div">
+        <div id="message-sender"></div>
+        <div id="message-content"></div>
+        <div id="message-time"></div>
+        <img src="" style="display: none;">
+      </div>
+    </div>
+  </div>
+
+  <script src="./message.js"></script>
+  <script src="./message_socket.js"></script>
+  <script>
+
+    // message = require('./message');
+    window.onload = initMessages()
+  </script>
+</body>
