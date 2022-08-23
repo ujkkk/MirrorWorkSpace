@@ -201,28 +201,29 @@ dbAccess.addMemo = function (user_id, from, contents, store) {
 }
 
 // mirror 사용자 id
-let userId = 1;
+let id = 1001;
 // 모듈로 userId도 사용 하기 위해 dbAccess에 추가
-dbAccess.userId = userId;
+dbAccess.id = id;
 
 // mirror 사용자 이름
 let userName;
 
 /* user id 설정과 user id에 따른 name 설정 */
-dbAccess.setUser = function (user_id) {
-    dbAccess.userId = user_id;
-    selectColumns('name', 'user', `user_id=${user_id}`)
+dbAccess.setUser = function (id) {
+    dbAccess.id = id;
+    selectColumns('name', 'user', `id=${id}`)
         .then(value => {
             userName = value[0].name;
             console.log('userName1:' + userName);
             // 모듈로 name도 사용 하기 위해 dbAccess에 추가
             dbAccess.userName = userName;
-            console.log('setUSUser: '+userId+" | "+userName);
-            document.location.href='index.html'
+            console.log('setUSUser: '+id+" | "+userName);
+            //document.location.href='index.html'
         })
 }
+dbAccess.getId = () => id;
 
 
-
+dbAccess.setUser('1001');
 /* dbAccess 객체를 모듈화 */
 module.exports = dbAccess;

@@ -58,10 +58,16 @@
                 <input type ='button' class="key" value="/">
             </div>
             <div  id="line5">
-                <input type ='button' class="key" value=" space "> 
+                <input type ='button' class="key" value=" space " id="space"> 
+                <input type ='button' class="key" value="한/영" onClick = "location1()"> 
             </div>
         </div>
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
         <script src="./keyboard.js"></script>
+        <script>
+             function location1(){
+                document.location.href='keyboard-en.html'
+            }
+        </script>
     </body>
 </html>

@@ -7,10 +7,13 @@ body{
 	width: 100vw;
 	background-color: #111; 
 }
+div{
+	display: inline-block;
+}
 .keyboard-container{
 	position: relative;
 	width : 40%;
-	height: 25%;
+	height: 30%;
     background-color: #000;
     border-radius: 2%;
 	border: 1px solid #fff;
@@ -20,10 +23,10 @@ body{
 }
 div input[type="button"]{
 	color :white;
-	font:  bold 1.2em Arial; 
+	/* font:  bold 1.2em Arial; */
     margin: 3px;
-	width : 7%;
-	height: 17%;
+	/* width : 7%;
+	height: 17%; */
 	background-color: #000;
     border-radius: 10%;
 	border: 1px solid #fff;
@@ -39,29 +42,34 @@ div input[type="button"]:hover {
 }
 #line1{
 	margin-left: 7%;
+	width: 100%;
 }
-#line2{
-	margin-left: 3%;
+#line2 .key{
+
+	width : 7%;
+	height: 13%;
 }
 #line3{
-	margin-left: 7%;
+	margin-left: 5%;
 }
-#line4{
-	margin-left: 3%;
+#line3 .key{
+	width : 7%;
+	height: 13%;
+	
+}
+#line4 .key{
+	width : 7%;
+	height: 13%;
 }
 #line5{
-	margin-left: 40%;
-	font:  bold 1.2em Arial; 
-    margin: 3px;
-	width : 17%;
-	height: 17%;
-	background-color: #000;
-    border-radius: 10%;
-	border: 1px solid #fff;
-	box-shadow: 0 0 5px rgba(33,156,243,.5),
-				0 0 10px rgba(255, 255, 255, 0.5),
-				0 0 20px rgba(33,156,243,.5);
+	margin-left: 30%;
+}
+#line5 .key #space{
+	
+	width : 20%;
+	height: 20%;
 }
 .line{
 	margin:1%;
+	width: 100%;
 }
