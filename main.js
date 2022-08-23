@@ -16,10 +16,10 @@ function createWindow() {
     const win = new BrowserWindow(options);
     
     //win.webContents.openDevTools();  
-    //win.loadFile("addFriend/list.html");
-    //.loadFile("addFriend/list.html");
+    //win.loadFile("addFriend/add_friend.html");
+    win.loadFile("index.html");
     //win.loadFile("keyboard/keyboard-kr.html");
-    win.loadFile("message_module/messegeSend/testMain.html");
+    //win.loadFile("message_module/messegeSend/testMain.html");
    //win.loadFile("message_module/message.html");
 }
 

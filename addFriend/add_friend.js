@@ -1,4 +1,3 @@
-server_db = require('../server_db');
 mirror_db = require('../mirror_db');
 const axios= require('axios');
 let add_name = null;
@@ -7,6 +6,7 @@ let delete_id =null;
 let delete_name = null;
 let id =null;
 const myid = '1001'
+
 function getUserInfo(){
     let ids = new Array();
     let names = new Array();
@@ -17,12 +17,26 @@ function getUserInfo(){
        users.forEach(user => {
            console.log('id : ' + user.id)
            ids.push(user.friend_id)
-           names.push(user.friend_id_name)
+           names.push(user.name)
            
        });
        createTable(ids, names)
    })
 }
+
+function focusOn(){
+    console.log('focusOn');
+    document.getElementById('id_content').focus();
+}
+function hiddenPopup(){
+    document.getElementById('confirm').style.visibility ='hidden';
+    document.getElementById('text').innerHTML ='';
+    document.getElementById('id_content').value = '';
+}
+function showPopup(){
+    document.getElementById('confirm').style.visibility ='visible';
+}
+
 //해당 행을 선택하면 색상이 바뀌는 이벤트 함수
 function HighLightTR(target) {
     console.log('하이라이트 호출')
@@ -192,3 +206,5 @@ function deleteUser(){
    
     }
 }
+
+module.exports = { getUserInfo };

@@ -136,33 +136,12 @@
                     <button class="addBtn" id="deleteBtn" onclick="deleteUser()">삭제</button>
                     <!-- <button class="returnBtn" onclick="returnToLogin()">Return</button> -->
                 </div>
-            </div>
-
-                
-            
-            
-           
+            </div>      
         </div>
-
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
         <script src="./add_friend.js"></script>
         <script>
-
-            window.onload = getUserInfo();
-
-            function focusOn(){
-                console.log('focusOn');
-                document.getElementById('id_content').focus();
-            }
-            function hiddenPopup(){
-                document.getElementById('confirm').style.visibility ='hidden';
-                document.getElementById('text').innerHTML ='';
-                document.getElementById('id_content').value = '';
-            }
-            function showPopup(){
-                document.getElementById('confirm').style.visibility ='visible';
-            }
-            
+            window.onload = getUserInfo(); 
         </script>
     </body>
 </html>
