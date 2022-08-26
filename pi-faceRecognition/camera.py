@@ -9,12 +9,14 @@ face_classifier = cv2.CascadeClassifier(cv2.data.haarcascades +'haarcascade_fron
 cam = NULL
 
 def onCam():
+    global cam
     if not (cam):
         cam=cv2.VideoCapture(0)
         cam.set(cv2.CAP_PROP_FRAME_WIDTH, 500)
         cam.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
 def closeCam():
+    global cam
     cam.release()
     cam = NULL
     cv2.destroyAllWindows()
@@ -52,10 +54,8 @@ def createCropImage(userName, dir_path, countN):
             face = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
             file_name_path =  str(count) + '.jpg'
            #크롭된 이미지 저장
+           #face/login/user
             cv2.imwrite(dir_path + '/'+file_name_path, face)
-    #저장 경로 ./face/login/
-            # cv2.putText(face, str(count), (50, 50), cv2.FONT_HERSHEY_COMPLEX,1,(0,255,0),2)
-           # cv2.imshow('Face Cropper',frame)
         else:
             print("Face not Found")
             pass
@@ -63,6 +63,5 @@ def createCropImage(userName, dir_path, countN):
         if cv2.waitKey(1) == 13 or count == countN:
             break
 
-    #cam.release()
     cv2.destroyAllWindows()
-    return 
+    return dir_path

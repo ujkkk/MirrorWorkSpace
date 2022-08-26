@@ -1,5 +1,6 @@
 from re import T
 import paho.mqtt.client as mqtt
+import json
 from camera import createCropImage
 import os
 import camera
@@ -77,7 +78,7 @@ def load_image(directory):
     for filename in os.listdir(directory):
         count = count + 1
         path = directory +os.sep + filename 
-        f = open(path,"rb" )
+        f = open(path,"rb")
         filecontent = f.read()
         byteArr.append(bytearray(filecontent))
     return byteArr
@@ -90,13 +91,18 @@ def Camera_login(count):
     # 카메라로 사진 찍어서 얼굴부분만 크롭해서 저장
     dir_name = os.path.join('face','login')
     # dir_name1 폴더안에 10장의 얼굴 이미지를 저장
-    saved_dir_name = createCropImage('user',  dir_name, count)
+    saved_dir_name = createCropImage('user', dir_name, count)
     # 사진 넘겨주기
     imagelist = load_image(saved_dir_name)
     for i in range(count) :
         imageByte = imagelist.pop()
-        # 얼굴인식 서버에 보낸 사진을 가지고 얼굴 식벽 시작
-        client.publish('login', imageByte)
+        print(imageByte)
+        #result = str(imageByte, 'utf-16')
+        # imageByte = imageByte.decode('utf-16')
+        data = json.dumps({ 'mirror_id' : '100', 
+                            'file' : imageByte.decode('utf-16','ignore')})
+        # 얼굴인식 서버에게 찍은 사진을 보냄
+        client.publish('login', data)
 
 
 def Camera_createAccount(username, count):
@@ -105,8 +111,9 @@ def Camera_createAccount(username, count):
     imagelist = load_image(dir_name2)
     for i in range(count) :
         imageByte = imagelist.pop()
+        imageByte_list = imageByte.split("'")
         # 서버에 보냄   
-        client.publish('createAccount/image', imageByte)
+        client.publish('createAccount/image', imageByte_list[1])
 
 def existingUsers():
     Camera_login(10)

@@ -1,5 +1,5 @@
 client = require('./mqtt')
-_db = require('./mirror_db')
+_db = require('../mirror_db')
 let id
 //삭제 버튼 누르면 login 실행
 //login 토픽에 'delete' 메시지 보내기

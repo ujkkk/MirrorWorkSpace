@@ -13,12 +13,12 @@ import os.path
 
 def user_check(embedding_file_name):
 
-    pre_embedding_file= load('trainfaces-embeddings.npz')
+    pre_embedding_file= load('./files/trainfaces-embeddings.npz')
     label_y = pre_embedding_file['arr_1']
-    # 얼굴 임베딩 불러오기
+    # 얼굴 임베딩 파일 불러오기
     data = load(embedding_file_name)
     
-    trainX, trainy = data['arr_0'], data['arr_1']
+    trainX = data['arr_0']
     # 입력 벡터 일반화
     in_encoder = Normalizer(norm='l2')
     trainX = in_encoder.transform(trainX)
@@ -26,31 +26,21 @@ def user_check(embedding_file_name):
     out_encoder = LabelEncoder()
     out_encoder.fit(label_y)
     print('모델 불러오기')
-    #out_encoder.fit(trainy)
-    #trainy = out_encoder.transform(trainy)
+
     # 모델 적합
-    model_file = 'model.pkl'
+    model_file = './files/model.pkl'
     if not os.path.isfile(model_file):
         print('모델이 없습니다')
         return
 
-    print("."+  os.path.sep + model_file)
-    model = joblib.load("model.pkl")
+    model = joblib.load("./files/model.pkl")
 
-    # 추측
-    yhat_train = model.predict(trainX)
-    # 정확도 점수
-    #score_train = accuracy_score(trainy, yhat_train)
-    # 요약
-    #print('정확도: 훈련=%.3f' % (score_train*100))
     count =[0 for i in range(100)]
     # 테스트 데이터셋에서 임의의 예제에 대한 테스트 모델
     for i in range(10):
         selection = i
         random_face_emb = trainX[selection]
-        #random_face_class = trainy[selection]
-        #random_face_name = out_encoder.inverse_transform([random_face_class])
-        # 얼굴 예측
+        #얼굴 예측
         sample = expand_dims(random_face_emb, axis=0)
         yhat_class = model.predict(sample)
         yhat_prob = model.predict_proba(sample)
@@ -79,10 +69,6 @@ def user_check(embedding_file_name):
         
         return 0
 
-            
-   # predict_names = out_encoder.inverse_transform(yhat_class)
-   # print('예상: %s (%.3f)' % (predict_names[0], class_probability))
-    print(count) 
 
  
    

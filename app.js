@@ -1,7 +1,7 @@
-//const receivedData = location.href.split('?')[1];
+const receivedData = location.href.split('?')[1];
 let mirrorDB = require('./mirror_db');
 mirrorDB.userId = 1001;//receivedData;
-//require('./weather_module/weather.js');
+require('./weather_module/weather.js');
 
 /* 여기서 서버에 접근 + DB에 받아오기 */
 const { default: axios } = require('axios');
@@ -23,71 +23,7 @@ axios.get(`http://localhost:9000/check/${mirrorDB.userId}`)
                     let contents = datas[i].content;
                     dbAccess.addMemo(mirrorDB.userId,sender,contents,1);
             }
-            else if(datas[i].type == 'audio'){
-                let sender= data[i].sender;
-                //서버에 저장되어 있는 파일명을 받아오기
-                let fileName = datas[i].content
-                axios({
-                    url: 'http://localhost:9000/get/audio', // 통신할 웹문서
-                    method: 'get', // 통신할 방식
-                    data : { // 인자로 보낼 데이터
-                      fileName : fileName     
-                    }
-                  })
-                .then( response =>{
-                    console.log(response);
-                    time = new Date().getTime();
-                    var file =  './image/server/' + time + '.jpg';
-                    url = response.data;
-                
-                    var bstr = atob(url);
-                    var n = bstr.length;
-                    // base64 인코딩을 바이트 코드로 변환
-                    var u8arr = new Uint8Array(n);
-                    
-                    fs.writeFile(file, u8arr, 'utf8', function(error){
-                    });
-                    while(n--) {
-                        u8arr[n] = bstr.charCodeAt(n);
-                    }
-                
-                })
-            }
-            else if(datas[i].type == "image"){
-                let sender= data[i].sender;
-                //서버에 저장되어 있는 파일명을 받아오기
-                let fileName = datas[i].content
-                //let fileName = '1660840019907.txt';
-                
-                axios({
-                    url: 'http://localhost:9000/get/image', // 통신할 웹문서
-                    method: 'get', // 통신할 방식
-                    data : { // 인자로 보낼 데이터
-                      fileName : fileName     
-                    }
-                  })
-                .then( response =>{
-                    console.log(response);
-                    time = new Date().getTime();
-                    var file =  './image/server/' + time + '.jpg';
-                    url = response.data;
-                
-                    var bstr = atob(url);
-                    var n = bstr.length;
-                    // base64 인코딩을 바이트 코드로 변환
-                    var u8arr = new Uint8Array(n);
-                    
-                    fs.writeFile(file, u8arr, 'utf8', function(error){
-                    });
-                    while(n--) {
-                        u8arr[n] = bstr.charCodeAt(n);
-                    }
-                
-                })
-            }
-        
         }
-
 
         // memo 제작
         require('./memo_module/create_memo');

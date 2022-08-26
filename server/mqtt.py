@@ -8,6 +8,7 @@ from createAccount import reTrain
 import os
 from keras.models import load_model
 import shutil
+import json
 
 curDir = os.path.dirname(os.path.realpath(__file__))
     #curDir = '.' + os.path.sep + 'faceRecognition'
@@ -42,6 +43,7 @@ def on_message(client, userdata, msg):
     global count
     global flag
     global delete_id
+
     #command = msg.payload.decode("utf-8")
    # print("receiving ", msg.topic, " ", str(msg.payload))
     if(msg.topic == 'reTrain'):
@@ -60,14 +62,21 @@ def on_message(client, userdata, msg):
         global exist_flag 
         exist_flag = True
 
-    if(msg.topic == 'login'):  
+    # 10개의 login 토픽이 오면 10장의 사진을 가지고 로그인 시도
+    if(msg.topic == 'login'): 
+        print(type(msg.payload)) 
+        jsonObject = json.loads(msg.payload)
+        
+        url = jsonObject['file']
+        print((url))
+    
+     
+       # print(url)
         count = (count +1)%10
-       # print('imagelist 받아오기')
         f = open('face' +  os.sep + 'login' + os.sep + 'user' + os.sep + str(count) +'.jpg','wb')
-        f.write(msg.payload)
+        f.write(url)
         f.close()
-        print('image received')
-        # 10장의 이미지가 다 찍히면
+        # 10장의 이미지가 다 찍히면 얼굴 식별 시작
         if not (count):
              global login_flag
              login_flag = True
@@ -145,7 +154,6 @@ while True :
         delete_id ==''
         delete_folder_flag = False
     if (login_flag):
-       
         print('while - login')
         # 확인된 유저의 id 반환
         loginCheck = login(embeddingModel)

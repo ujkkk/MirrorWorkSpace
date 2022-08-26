@@ -1,7 +1,7 @@
 <html>
     <head>
-        <link href="css/inputtype.css" rel="stylesheet">
-        <link rel="stylesheet" href="./delete.css" />
+        <link href="../css/inputtype.css" rel="stylesheet">
+        <link rel="stylesheet" href="../css/delete.css" />
     </head>
     <body>
         <title>Delete</title>
@@ -30,7 +30,7 @@
                 document.location.href="init.html";
             }
             //const getSeq = require('./getSeq')
-            let _db = require('./mirror_db')
+            let _db = require('../mirror_db')
             let _delete = require('./delete')
             let deleteName = null
             let ids = new Array()
@@ -42,11 +42,11 @@
            
             function getUserInfo(){
                
-                _db.select('*', 'user', 'user_id is not null')
+                _db.select('*', 'user', 'id is not null')
                 .then(users =>{
                     users.forEach(user => {
-                        console.log('user_id : ' + user.user_id)
-                        ids.push(user.user_id)
+                        console.log('id : ' + user.id)
+                        ids.push(user.id)
                         names.push(user.name)
                         
                     });

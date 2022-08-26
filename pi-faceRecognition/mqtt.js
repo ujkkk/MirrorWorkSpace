@@ -1,7 +1,7 @@
 const mqtt = require('mqtt')
 const spawn = require('child_process').spawn;
 const createLoginMessage = require('./loginMessage')
-const _db = require('./mirror_db')
+const _db = require('../mirror_db')
 const options = {
     host: '127.0.0.1',
     port: 1883
