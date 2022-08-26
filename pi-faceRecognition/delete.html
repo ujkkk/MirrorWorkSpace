@@ -4,32 +4,22 @@
         <link rel="stylesheet" href="./delete.css" />
     </head>
     <body>
-        <title>Create New Account</title>
-        <br>
-        <h1 style="color:white; text-align: center; margin-top: 15%;">Delete</h1>
-       
-           <br><br>
-
-        <div class="row">
-            <table id="table-1" width="100%" class="table table-bordered table-hover text-center">
-                <thead>
-                    <tr>
-                        <th>User</th>
-                    </tr>
-                </thead>
-                <tbody id ='htmlTbody'>				
-                    
-                </tbody>
-            </table>
-            <div class="btnDiv" id="loginDiv">
-                <button class="btn" id="deleteBtn" onclick="deleteUser()">삭제</button>
-                <button class="returnBtn" onclick="returnToLogin()">Return</button>
+        <title>Delete</title>
+        <div id="container">
+            <div id="tableContainer">
+                <table>
+                    <thead><tr><th>User</th></tr></thead>
+                    <tbody id ='htmlTbody'>
+                    </tbody>
+                </table>
             </div>
-            <div class="col-lg-12" id="ex1_Result1" >
-                
-            </div> 
-            <div class="col-lg-12" id="text" ></div> 
+            <div id="buttonContainer">
+                <button id="deleteBtn" onclick="deleteUser()">Delete</button>
+                <button id="HomenBtn" onclick="returnToHome()">Home</button>
+            </div>
         </div>
+        <div class="col-lg-12" id="ex1_Result1" ></div> 
+        <div class="col-lg-12" id="text" ></div> 
             
 
        
@@ -126,6 +116,10 @@
                 console.log('change deleteName : '+ deleteName)
 
             });
+             // Home으로 돌아가기
+             function returnToHome(){
+                window.history.back();
+            }
             
         }
        

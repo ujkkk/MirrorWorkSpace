@@ -39,10 +39,6 @@ def createCropImage(userName, dir_path, countN):
     onCam()
     #print("현재 위치" + str(os.getcwdb()))
     dir_path = os.path.join(dir_path, userName)
-    #폴더 생성
-    if not (os.path.exists(dir_path)):
-        os.mkdir(dir_path)
-    #print("현재 위치" + dir_path)
     count = 0
     #폴더 생성
     if not (os.path.exists(dir_path)):
@@ -51,8 +47,7 @@ def createCropImage(userName, dir_path, countN):
     while True:
         ret, frame = cam.read()
         if face_extractor(frame) is not None:
-            count += 1
-            
+            count += 1    
             face = cv2.resize(face_extractor(frame), (160, 160))
             face = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
             file_name_path =  str(count) + '.jpg'

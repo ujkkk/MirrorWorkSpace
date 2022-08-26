@@ -1,115 +1,69 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Login & Sign up</title>
+        <title>Init</title>
         <meta charset="utf-8">
-        <style>
-            html,
-            body {
-                width: 100%;
-                height: 100%;
-                background-color: black;
-            }
-            .container {
-                position:relative;
-                /* display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                min-height: 100vh; */
-                top: 60%;
-                text-align: center;
-                /* margin-top: 50%; */
-            }
-            img{
-                display: inline-block;
-                content: "";
-                border: none;
-            }
-            .btnDiv{
-                margin: 30px;
-            }
-            .btn{
-                width: 40vw;
-                padding: 10px;
-                border: solid 3px white;
-                border-radius: 12px;
-                background-color:transparent;
-                color: white;
-                /* font-size: 5vw; */
-                font-size: xx-large;
-                /* font-weight: bold; */
-                /* font-family: 'Do Hyeon', sans-serif; */
-            }
-            .btn:active{
-                border: solid 3px gray;
-                color: gray;
-                background-color: white;
-            }
-            #loginMessage{
-                position: absolute;
-                top: 50%;
-                width: 100%;
-                color: white;
-                text-align: center;
-                font-size: x-large;
-                /* font-family: 'Do Hyeon', sans-serif; */
-            }
-            #loadingDiv{
-                position:absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-            }
-            /* 로딩 스피너 css */
-            #loading {
-                
-                width:80px;
-                height:80px;
-                border-radius:50%;
-                padding:1px;
-                /* 베이지:#bdbcbc | 약간민트:#789fa3 | 노랑:#fec132*/
-                background:conic-gradient(#0000 10%,#789fa3) content-box;
-                -webkit-mask:
-                    repeating-conic-gradient(#0000 0deg,#000 1deg 20deg,#0000 21deg 36deg),
-                    radial-gradient(farthest-side,#0000 calc(100% - 18px),#000 calc(100% - 16px));
-                -webkit-mask-composite: destination-in;
-                mask-composite: intersect;
-                animation:s4 1s infinite steps(10);
-            }
-            @keyframes s4 {to{transform: rotate(1turn)}}
-        </style>
+        <link rel="stylesheet" type="text/css" href="css/init.css">
+        <link rel="stylesheet" type="text/css" href="css/loading.css">
+        <script src="loading.js"></script>
         <script>   
-            const client = require("./mqtt")
-            var loginFlag = false
+            const client = require("./mqtt");
+            let loginBtnFlag = false;
+            let signUpBtnFlag = false;
 
-            // 로그인 start
+            let btn; // 눌린 버튼 정보 저장
+            let btnText="";
+
+            client.subscribe('error'); // face not found를 위한 토픽 : "error"
+            client.on('message', (topic, message, packet) =>{
+                if(topic == "error"){
+                    var msg = String(message);
+                    const warningText = "Face Not Found";
+
+                    if(loginBtnFlag){ // Login 버튼을 눌렀는데 얼굴이 안 보일 경우
+                        btn = document.getElementById("loginBtn");
+                        btnText = "Login";
+                        loginBtnFlag = false;
+                    }
+                    else if(signUpBtnFlag){ // Sign Up 버튼을 눌렀는데 얼굴이 안 보일 경우
+                        btn = document.getElementById("signUpBtn");
+                        btnText = "Sign Up";
+                        signUpBtnFlag = false;
+                    }
+
+                    if(msg == "notFound"){ // 그 버튼에 Error 문구 띄우기
+                        btn.textContent  = warningText;
+                        btn.setAttribute("style", "color: red; border: solid 3px red; box-shadow: 0 0 25px red;");
+                    }
+                    else { // 얼굴을 찾았을 경우 버튼 복구
+                        btn.textContent = btnText;
+                        btn.setAttribute("style", "color: white; border: solid 2px white;");
+                    }
+                }
+            })
+
+            // Login 버튼을 눌렀을 때
             function login(){
-                console.log("login()");
-                loading();
-                loginFlag = true;
-                client.publish('loginCamera',"login");
+                loading(); // 로딩 시작
+                loginBtnFlag = true;
+                client.publish('loginCamera',"login"); // 로그인 시작
             }
 
-            // 회원가입 start
+            // Sign Up 버튼을 눌렀을 때
             function signUp(){
-                console.log('signUp()');
-                client.publish('existingUser', 'ok')
-                //document.location.href='signUp.html';
+                loading(); // 로딩 시작
+                signUpBtnFlag = true;
+                client.publish('exist', 'ok') // 이미 가입한 회원인지 확인
             }
 
-            // 로딩 start
-            function loading(){
-                document.getElementById("loading").style.display='block';
-                document.getElementById("loginMessage").innerHTML="";
+            // Delete 버튼을 눌렀을 때
+            function deleteUser(){
+                document.location.href = 'delete.html'
             }
 
             //재학습 시키기
             function model(){
                 client.publish('reTrain', '')
-            }
-            function deleteUser(){
-                document.location.href = 'delete.html'
             }
         </script>
     </head>
@@ -120,9 +74,9 @@
         <div class="container">
             <div class="btnDiv" id="loginDiv"><button class="btn" id="loginBtn" onclick="login()">Login</button></div>
             <div class="btnDiv" id="signUpDiv"><button class="btn" id="signUpBtn" onclick="signUp()">Sign Up</button></div>
-            <div class="btnDiv" id="deleteDiv"><button class="btn" id="deleteBtn" onclick="deleteUser()">삭제</button></div>
+            <div class="btnDiv" id="deleteDiv"><button class="btn" id="deleteBtn" onclick="deleteUser()">Delte</button></div>
             <div class="btnDiv" id="modelDiv"><button class="btn" id="modelBtn" onclick="model()">Train</button></div>
         </div>
-        <div id="loginMessage"></div>
+        <div id="message"></div>
     </body>
 </html>

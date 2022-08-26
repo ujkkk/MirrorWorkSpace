@@ -17,7 +17,7 @@ function createWindow() {
     
     //win.webContents.openDevTools();  
     //win.loadFile("addFriend/add_friend.html");
-    win.loadFile("index.html");
+    win.loadFile("init.html");
     //win.loadFile("keyboard/keyboard-kr.html");
     //win.loadFile("message_module/messegeSend/testMain.html");
    //win.loadFile("message_module/message.html");

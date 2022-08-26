@@ -21,7 +21,7 @@ def on_connect(client, userdata, flag, rc):
     print("Connect with result code:"+ str(rc))
     client.subscribe('loginCamera')
     client.subscribe('createAccountCamera')
-    client.subscribe('existingUser')
+    client.subscribe('exist')
     client.subscribe('closeCamera')
     client.subscribe('delete/camera')
 
@@ -84,16 +84,18 @@ def load_image(directory):
         
 #로그인하기 위해 사진찍기 시작
 def Camera_login(count):
+    #카메라 키기
     camera.onCam()
     print('while - loginCamera')
     # 카메라로 사진 찍어서 얼굴부분만 크롭해서 저장
-    dir_name1 = os.path.join('face','login')
-    dir_name2 = os.path.join('face','login','user')
-    createCropImage('user',  dir_name1, count)
+    dir_name = os.path.join('face','login')
+    # dir_name1 폴더안에 10장의 얼굴 이미지를 저장
+    saved_dir_name = createCropImage('user',  dir_name, count)
     # 사진 넘겨주기
-    imagelist = load_image(dir_name2)
+    imagelist = load_image(saved_dir_name)
     for i in range(count) :
         imageByte = imagelist.pop()
+        # 얼굴인식 서버에 보낸 사진을 가지고 얼굴 식벽 시작
         client.publish('login', imageByte)
 
 
@@ -139,10 +141,12 @@ while True :
             client.publish('login', imageByte)
         delete_login_flag = False
     
-
+    #유저가 로그인버튼을 누르면 사진 10장을 찍고 
+    #얼굴인식하는 서버에 사진을 보내서 유저를 식별함
     if (loginCamera_flag):
         Camera_login(10)
         loginCamera_flag = False
+
     if(createAccountCamera_flag):
         
         if not (user_id == 0):

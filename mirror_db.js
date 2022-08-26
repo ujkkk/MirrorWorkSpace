@@ -167,8 +167,9 @@ const addUser = (name) => new Promise((resolve, reject) => {
             if (result) {
                 selectColumns('id', 'user', `name='${name}'`)
                     .then(value => {
-                        console.log('dv: ' + parseInt(value[value.length - 1].user_id));
-                        resolve(String(value[value.length - 1].user_id));
+                        console.log('dv: ' + parseInt(value[value.length - 1].id));
+                        //만들어진 user_id를 리턴
+                        resolve(String(value[value.length - 1].id));
                     });
             }
             else {
