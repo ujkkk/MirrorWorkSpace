@@ -16,6 +16,9 @@ var pool = mysql.createPool({
     dateStrings : 'date'
 });
 
+// mirror 사용자 id
+let id = 1001;
+let mirror_id = 100;
 
 /* 테이블 columns 제작 (insert 문) */
 const createColumns = (table_name, data) => new Promise((resolve, reject) => {
@@ -159,7 +162,7 @@ const addUser = (name) => new Promise((resolve, reject) => {
     console.log('addUser call');
 
     // user table 제작에 필요한 column을 데이터 객체로 형성
-    var data = { name: name };
+    var data = { name: name , mirror_id : mirror_id};
 
     // user 행 제작
     createColumns('user', data)
@@ -202,8 +205,7 @@ dbAccess.addMemo = function (user_id, from, contents, store) {
     createColumns('memo', data);
 }
 
-// mirror 사용자 id
-let id = 1001;
+
 // 모듈로 userId도 사용 하기 위해 dbAccess에 추가
 dbAccess.id = id;
 
@@ -220,12 +222,13 @@ dbAccess.setUser = function (id) {
             // 모듈로 name도 사용 하기 위해 dbAccess에 추가
             dbAccess.userName = userName;
             console.log('setUSUser: '+id+" | "+userName);
-            //document.location.href='index.html'
+            document.location.href='index.html'
         })
 }
 dbAccess.getId = () => id;
 
+dbAccess.getMirror_id = () => mirror_id;
 
-dbAccess.setUser('1001');
+// dbAccess.setUser('1001');
 /* dbAccess 객체를 모듈화 */
 module.exports = dbAccess;

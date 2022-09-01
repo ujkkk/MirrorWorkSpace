@@ -11,7 +11,6 @@ import shutil
 import json
 
 curDir = os.path.dirname(os.path.realpath(__file__))
-    #curDir = '.' + os.path.sep + 'faceRecognition'
 os.chdir(curDir)
 embeddingModel = load_model('facenet_keras.h5')
 
@@ -27,6 +26,7 @@ delete_login_flag = False
 delete_folder_flag = False
 delete_id = ''
 trainFolderName = 'train3'
+mirror_id = NULL
 
 def on_connect(client, userdata, flag, rc):
     print("Connect with result code:"+ str(rc))
@@ -43,38 +43,41 @@ def on_message(client, userdata, msg):
     global count
     global flag
     global delete_id
-
+    global mirror_id
     #command = msg.payload.decode("utf-8")
    # print("receiving ", msg.topic, " ", str(msg.payload))
-    if(msg.topic == 'reTrain'):
+    if(msg.topic == 'reTrain'): 
+        mirror_id = int(msg.payload)
+        print(mirror_id)
         global reTrain_flag
         reTrain_flag = True
     if(msg.topic == 'delete/login'):
+        mirror_id = int(msg.payload)
         global delete_login_flag
         delete_login_flag = True
 
     if(msg.topic == 'delete/folder'):
-        delete_id = str(int(msg.payload))
+        mirror_id = int((msg.payload)[0:3])
+        delete_id = int((msg.payload)[3:])
         global delete_folder_flag
         delete_folder_flag = True
 
     if(msg.topic == 'exist'): 
+        mirror_id = int(msg.payload)
         global exist_flag 
         exist_flag = True
 
     # 10개의 login 토픽이 오면 10장의 사진을 가지고 로그인 시도
     if(msg.topic == 'login'): 
-        print(type(msg.payload)) 
-        jsonObject = json.loads(msg.payload)
-        
-        url = jsonObject['file']
-        print((url))
-    
-     
-       # print(url)
+        mirror_id = msg.payload[0:3].decode('utf-8')
+        print('mirror_id: ' + mirror_id)
+
+        file = msg.payload[3:]
         count = (count +1)%10
-        f = open('face' +  os.sep + 'login' + os.sep + 'user' + os.sep + str(count) +'.jpg','wb')
-        f.write(url)
+
+        file_path = os.path.join('mirror', str(mirror_id),'login', 'user',str(count)+'.jpg')  
+        f = open(file_path,'wb')
+        f.write(file)
         f.close()
         # 10장의 이미지가 다 찍히면 얼굴 식별 시작
         if not (count):
@@ -84,26 +87,31 @@ def on_message(client, userdata, msg):
 
     # 받아온 user_id로 폴더 생성
     if(msg.topic == 'createAccount/start'):
+        #미러 아이디는 3글자로 고정
+        mirror_id = int(msg.payload[0:3])
         global user_id
-        user_id = int(msg.payload)
-        print('user_name : ' +  str(user_id))
+        user_id = int(msg.payload[3:])
+        print('mirror_id : ' +  str(mirror_id))
+        print('user_id : ' +  str(user_id))
         if not (flag):
-            dir_name = 'face' + os.sep + trainFolderName + os.sep + str(user_id)
+            dir_path = os.path.join('mirror', str(mirror_id), 'train', str(user_id))
             #폴더가 없다면 만들고 있으면 안만들기
-            if not (os.path.exists(dir_name)):
-                os.mkdir(dir_name)
-                print(dir_name + '폴더 생성')
+            if not (os.path.exists(dir_path)):
+                os.mkdir(dir_path)
+                print(dir_path + '폴더 생성')
                 flag = True
 
     if(msg.topic == 'createAccount/image'):
         if(flag):
+            mirror_id = msg.payload[0:3].decode('utf-8')
+            file =msg.payload[3:]
             count = (count +1)%20
             print('user 아이디 : ' + str(user_id) + ', 사진 받아오기')
-            path = 'face' + os.sep + trainFolderName + os.sep + str(user_id)
+            file_path = os.path.join('mirror', str(mirror_id), 'train', str(user_id) )
             #폴더 생성
-            if (os.path.exists(path)):
-                f = open(path +  os.sep + str(count) +'.jpg','wb')
-                f.write(msg.payload)
+            if (os.path.exists(file_path)):
+                f = open(file_path +  os.sep + str(count) +'.jpg','wb')
+                f.write(file)
                 f.close()
                 if not (count):
                     # 모델 학습 시작 플래그 
@@ -132,15 +140,15 @@ client.loop_start()
 stopFlag = False
 while True :
     if(reTrain_flag):       
-        reTrain(embeddingModel, trainFolderName)
-        client.publish('reTrain/check', trainFolderName)
+        reTrain(embeddingModel, mirror_id)
+        client.publish('reTrain/check', mirror_id)
         reTrain_flag = False
 
     if(delete_folder_flag):
         if not (delete_id ==''):
             curDir = os.path.dirname(os.path.realpath(__file__))
             os.chdir(curDir)
-            delete_folder_name = os.path.join('face',trainFolderName,delete_id)
+            delete_folder_name = os.path.join('mirror', str(mirror_id), 'train',str(delete_id))
             print('서버 mqtt.py | delete_folder_name :' + delete_folder_name)
             #폴더가 있다면 삭제
             if (os.path.exists(delete_folder_name)):
@@ -156,17 +164,17 @@ while True :
     if (login_flag):
         print('while - login')
         # 확인된 유저의 id 반환
-        loginCheck = login(embeddingModel)
+        login_id = login(embeddingModel, mirror_id)
         
         if(exist_flag):
-            client.publish('exist/check', loginCheck)
+            client.publish('exist/check', str(login_id))
             print("exist 체크 완료")
         elif(delete_login_flag):
-            client.publish('delete/login/check', loginCheck)
+            client.publish('delete/login/check', str(login_id))
             print('delete/login/check 완료')
 
         else :
-            client.publish('loginCheck', loginCheck)
+            client.publish('loginCheck', str(login_id))
             print('login')
         # print("sending %s" % loginCheck)
         login_flag = False
@@ -176,7 +184,7 @@ while True :
     if (create_account_flag):
         print('while - createAccount')
         # 1은 pi 에서 받아온 유저아이디
-        check = createAccoount(embeddingModel,trainFolderName)
+        check = createAccoount(embeddingModel,mirror_id)
         client.publish('createAccount/check', check)
         print("sending %s" % check)
         create_account_flag = False
