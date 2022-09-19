@@ -11,9 +11,9 @@ from sklearn.metrics import accuracy_score
 import os
 import os.path
 
-def user_check(embedding_file_name):
-
-    pre_embedding_file= load('./files/trainfaces-embeddings.npz')
+# 얼굴 판별
+def user_check(embedding_file_name, mirror_id):
+    pre_embedding_file= load(os.path.join('mirror', mirror_id, 'files','trainfaces-embeddings.npz'))
     label_y = pre_embedding_file['arr_1']
     # 얼굴 임베딩 파일 불러오기
     data = load(embedding_file_name)
@@ -28,12 +28,12 @@ def user_check(embedding_file_name):
     print('모델 불러오기')
 
     # 모델 적합
-    model_file = './files/model.pkl'
+    model_file = os.path.join('mirror',mirror_id,'files','model.pkl')
     if not os.path.isfile(model_file):
         print('모델이 없습니다')
         return
 
-    model = joblib.load("./files/model.pkl")
+    model = joblib.load(model_file)
 
     count =[0 for i in range(100)]
     # 테스트 데이터셋에서 임의의 예제에 대한 테스트 모델
@@ -72,8 +72,8 @@ def user_check(embedding_file_name):
 
  
    
-
-def model_fit(embedding_file_name):
+# 얼굴 학습
+def model_fit(embedding_file_name, mirror_id):
 
     # 얼굴 임베딩 불러오기
     data = load(embedding_file_name)
@@ -87,12 +87,8 @@ def model_fit(embedding_file_name):
     out_encoder.fit(trainy)
     trainy = out_encoder.transform(trainy)
     # 모델 적합
-    model_file = 'model.pkl'
+    model_file = os.path.join(mirror_id,'files','model.pkl')
     #만들어진 모델이 없다면 새롭게 만든다
-    #if not os.path.isfile(os.path.join(os.getcwd(), 'faceRecognition', model_file)):
-       
-   # else :
-   #     model = load(os.path.join(os.getcwd(),'faceRecognition', model_file))
     model = SVC(kernel='linear', probability=True)
     model.fit(trainX, trainy)
     #모델 저장

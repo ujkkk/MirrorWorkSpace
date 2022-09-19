@@ -1,36 +1,100 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>ELECTRON EX</title>
-        <meta charset="utf-8">
-        <link href="css/weather.css" rel="stylesheet">
-        <link href="css/sticker.css" rel="stylesheet">
-    </head>
-    <body >
 
-        <br>
-        <div class="sibal">
-        <div class="container">
-        <h1>Today's Weather</h1>
-        <img id="icon">
-        <p id="weather"></p>
-        </div>
-        </div>
-        
-        <div id="sticker" style="position: absolute; right: 20px; bottom: 20px;">
-            <img id="stickerImg" src = "memo_module/img/sticker.png" widht="200px" height="200px">
+<head>
+    <title>ELECTRON EX</title>
+    <meta charset="utf-8">
+    <link href="css/weather.css" rel="stylesheet">
+    <link href="css/sticker.css" rel="stylesheet">
+    <!-- <link href="css/weather-icons.min.css" rel="stylesheet"> -->
+    <link href="css/clock.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/modal.css">
+    <script>
+        function setMemoDeleteBtn(e){
+            let deleteBtns = document.getElementsByClassName("memoDeleteBtn");
+
+            if (e.type == "dblclick" && deleteBtns.length != 0){
+                    for (let i=0;i<deleteBtns.length;i++)
+                        deleteBtns[i].style.visibility = "visible";
+            }
+            else if (e.type = "click" && deleteBtns.length != 0){
+                for (let i=0;i<deleteBtns.length;i++)
+                        deleteBtns[i].style.visibility = "hidden";
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <br>
+    <article id="container" class = "blur_effect">
+        <div class="weather_ui">
+            <div id="CurrIcon"></div>
+            <div id="temp"></div>
+            <i class="wi wi-degrees"></i>
+            <div id="weather_option">
+                
+                <div id="temp_max"></div><i class="wi wi-degrees"></i>
+                <div id="temp_min"></div><i class="wi wi-degrees"></i> <br>
+                <div id="humidity"></div> <i class="wi wi-humidity"></i>
+                <p id="weather"></p>
+            </div>    
+        </div><div id="clock_ui">
+            <div>
+                <span id="time"></span><span id="second"></span>
+            </div>
+            
         </div>
 
-        <!--script type="module" src="option_add.js"></script-->
-        <!-- <script  src="app.js"></script> -->
-        <script src='imagePost.js'></script>
-     
-        <script>
-            // const weather = require('./weather_module/weather.js');
-            // function f1(){
-            //     weather();
-            // }
-        </script>
-        -->
-    </body>
+    </article>
+
+    <div id="memo_ui" class="blur_effect">
+        <div id="myMemo"></div><div id="sendMemo"></div>
+    </div>
+
+    <div id="contents">
+        <div id="memo">
+        </div>
+        <div id="memoDiv" >
+            <input id= "apply" type="button" value="Submit">
+            <input id = "cancle" type="button" value="Cancle">
+            <div id="user_list">
+                <!-- <ul id="otherUserList">
+                </ul> -->
+            </div>
+        </div>
+    </div>  
+<!-- modal 새로 넣은 부분 -->
+    <div id="modal" class="modal-overlay">
+        <div class="modal-window">
+            <div class="title">
+                <h3>Mirror user</h3>
+            </div>
+            <div class="close-area">✕</div>
+            <div id="user-select">
+                <div id="select-left">
+                    <input type="radio" name="user" id="inside" checked><label for="inside">미러 내부 사용자</label>
+                    <div id="inside-selected" class="selected-div"></div>
+                </div>
+                <div id = "select-right">
+                    <input type="radio" name = "user" id="outside"><label for="outside">미러 외부 사용자</label>
+                    <div id="outside-selected" class="selected-div"></div>
+                </div>
+            </div>
+            <div id = "modal-contents">
+                <ul id="otherUserList">
+                </ul>
+            </div>
+        </div>
+    </div>
+<!-- modal 새로 넣은 부분 여기까지 -->
+    <div id="sticker">
+        <img id="stickerImg" ondblclick="setMemoDeleteBtn(event)" onclick="setMemoDeleteBtn(event)" src="memo_module/img/sticker.png">
+        <!-- <img id="callImg" src="memo_module/img/call.png"> -->
+    </div>
+    <script src="app.js"></script>
+    <!-- <script src = "clock.js"></script> -->
+    
+</body>
+
 </html>

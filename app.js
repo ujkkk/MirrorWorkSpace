@@ -1,7 +1,7 @@
 const receivedData = location.href.split('?')[1];
 let mirrorDB = require('./mirror_db');
 mirrorDB.userId = 1001;//receivedData;
-require('./weather_module/weather.js');
+require('./weather_module/weather');
 
 /* 여기서 서버에 접근 + DB에 받아오기 */
 const { default: axios } = require('axios');
@@ -40,6 +40,3 @@ axios.get(`http://localhost:9000/check/${mirrorDB.userId}`)
             require('./memo_module/sticker');
         }
     );
-
-
-
