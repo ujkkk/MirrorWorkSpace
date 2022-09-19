@@ -64,17 +64,14 @@ def on_message(client, userdata, msg):
 
     # 10개의 login 토픽이 오면 10장의 사진을 가지고 로그인 시도
     if(msg.topic == 'login'): 
-        print(type(msg.payload)) 
-        jsonObject = json.loads(msg.payload)
-        
-        url = jsonObject['file']
-        print((url))
-    
-     
-       # print(url)
+        url = msg.payload
+        mirror_id = url[0:3]
+        file = url[4:]
         count = (count +1)%10
+
         f = open('face' +  os.sep + 'login' + os.sep + 'user' + os.sep + str(count) +'.jpg','wb')
-        f.write(url)
+        f.write(file)
+        print(type(file))
         f.close()
         # 10장의 이미지가 다 찍히면 얼굴 식별 시작
         if not (count):

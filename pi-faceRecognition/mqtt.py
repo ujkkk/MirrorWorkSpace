@@ -1,3 +1,4 @@
+from email.mime import image
 from re import T
 import paho.mqtt.client as mqtt
 import json
@@ -100,9 +101,9 @@ def Camera_login(count):
         #result = str(imageByte, 'utf-16')
         # imageByte = imageByte.decode('utf-16')
         data = json.dumps({ 'mirror_id' : '100', 
-                            'file' : imageByte.decode('utf-16','ignore')})
+                            'file' : str(imageByte)})
         # 얼굴인식 서버에게 찍은 사진을 보냄
-        client.publish('login', data)
+        client.publish('login', bytearray('100?', 'utf-8')+imageByte)
 
 
 def Camera_createAccount(username, count):
