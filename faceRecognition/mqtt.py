@@ -32,6 +32,7 @@ def on_connect(client, userdata, flag, rc):
 
 def on_message(client, userdata, msg):
     message = msg.payload.decode("utf-8")
+    print("받은 topic :" + msg.topic)
     print("payload : " + str(message))
 
     if(msg.topic == 'closeCamera'):
@@ -108,10 +109,10 @@ def Camera_login(count):
         print(imageByte)
         #result = str(imageByte, 'utf-16')
         # imageByte = imageByte.decode('utf-16')
-        data = json.dumps({ 'mirror_id' : '100', 
-                            'file' : str(imageByte)})
+       # data = json.dumps({ 'mirror_id' : '100', 
+             #               'file' : str(imageByte)})
         # 얼굴인식 서버에게 찍은 사진을 보냄
-        client.publish('login', bytearray('100?', 'utf-8')+imageByte)
+        client.publish('login', bytearray(str(mirror_id), 'utf-8')+imageByte)
 
 
 def Camera_createAccount(username, count):
