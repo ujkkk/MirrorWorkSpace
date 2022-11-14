@@ -1,7 +1,7 @@
 
 from asyncio.windows_events import NULL
 from model import user_check
-from numpy import savez_compressed 
+from numpy import savez_compressed
 from dataPreProcess import load_dataset
 from dataPreProcess import embedding
 import os.path 
@@ -27,4 +27,5 @@ def login(embeddingModel, mirror_id):
         return user     
     else :
         return 'NULL'
+
 

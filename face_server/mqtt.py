@@ -25,7 +25,6 @@ reTrain_flag = False
 delete_login_flag = False
 delete_folder_flag = False
 delete_id = ''
-trainFolderName = 'train3'
 mirror_id = NULL
 
 def on_connect(client, userdata, flag, rc):
@@ -44,6 +43,9 @@ def on_message(client, userdata, msg):
     global flag
     global delete_id
     global mirror_id
+
+    print('받은 topic :' + msg.topic)
+    print('받은 메시지 : ' + str(msg.payload))
     #command = msg.payload.decode("utf-8")
    # print("receiving ", msg.topic, " ", str(msg.payload))
     if(msg.topic == 'reTrain'): 
