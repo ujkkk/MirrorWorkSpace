@@ -32,6 +32,7 @@ def on_connect(client, userdata, flag, rc):
 
 def on_message(client, userdata, msg):
     message = msg.payload.decode("utf-8")
+    print("받은 topic :" + msg.topic)
     print("payload : " + str(message))
 
     if(msg.topic == 'closeCamera'):
@@ -92,6 +93,42 @@ def load_image(directory):
         byteArr.append(bytearray(filecontent))
     return byteArr
         
+#로그인하기 위해 사진찍기 시작
+def Camera_login(count):
+    #카메라 키기
+    camera.onCam()
+    print('while - loginCamera')
+    # 카메라로 사진 찍어서 얼굴부분만 크롭해서 저장
+    dir_name = os.path.join('face','login')
+    # dir_name1 폴더안에 10장의 얼굴 이미지를 저장
+    saved_dir_name = createCropImage('user', dir_name, count)
+    # 사진 넘겨주기
+    imagelist = load_image(saved_dir_name)
+    for i in range(count) :
+        imageByte = imagelist.pop()
+        print(imageByte)
+        #result = str(imageByte, 'utf-16')
+        # imageByte = imageByte.decode('utf-16')
+       # data = json.dumps({ 'mirror_id' : '100', 
+             #               'file' : str(imageByte)})
+        # 얼굴인식 서버에게 찍은 사진을 보냄
+        client.publish('login', bytearray(str(mirror_id), 'utf-8')+imageByte)
+
+
+def Camera_createAccount(username, count):
+    camera.onCam()
+    # 사진 넘겨주기
+    imagelist = load_image(dir_name2)
+    for i in range(count) :
+        imageByte = imagelist.pop()
+        imageByte_list = imageByte.split("'")
+        # 서버에 보냄   
+        client.publish('createAccount/image', imageByte_list[1])
+
+def existingUsers():
+    Camera_login(10)
+
+
 
 
 stopFlag = False
