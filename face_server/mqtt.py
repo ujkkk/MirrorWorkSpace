@@ -1,4 +1,4 @@
-from asyncio.windows_events import NULL
+
 from pydoc import cli
 from re import T
 import paho.mqtt.client as mqtt
@@ -8,44 +8,45 @@ from createAccount import reTrain
 import os
 from keras.models import load_model
 import shutil
-import json
 
+embeddingModel = load_model('facenet_keras.h5')
 curDir = os.path.dirname(os.path.realpath(__file__))
 os.chdir(curDir)
-embeddingModel = load_model('facenet_keras.h5')
+
 
 create_account_flag = False
 login_flag = False
 exist_flag = False
-user_id = 0
-user_name = ''
+stopFlag = False
 flag = False
-existUser = ''
 reTrain_flag = False
 delete_login_flag = False
 delete_folder_flag = False
+mirror_id = None
+user_name = ''
+existUser = ''
 delete_id = ''
-trainFolderName = 'train3'
-mirror_id = NULL
+user_id = 0
+count= 0
 
 def on_connect(client, userdata, flag, rc):
     print("Connect with result code:"+ str(rc))
-    client.subscribe('login')
-    client.subscribe('delete/login')
     client.subscribe('createAccount/start')
     client.subscribe('createAccount/image')
-    client.subscribe('exist')
-    client.subscribe('reTrain')
+    client.subscribe('delete/login')
     client.subscribe('delete/folder')
+    client.subscribe('reTrain')
+    client.subscribe('login')
+    client.subscribe('exist')
 
-count= 0
+
 def on_message(client, userdata, msg):
     global count
     global flag
     global delete_id
     global mirror_id
-    #command = msg.payload.decode("utf-8")
-   # print("receiving ", msg.topic, " ", str(msg.payload))
+    global user_id
+
     if(msg.topic == 'reTrain'): 
         mirror_id = int(msg.payload)
         print(mirror_id)
@@ -71,10 +72,8 @@ def on_message(client, userdata, msg):
     if(msg.topic == 'login'): 
         mirror_id = msg.payload[0:3].decode('utf-8')
         print('mirror_id: ' + mirror_id)
-
         file = msg.payload[3:]
         count = (count +1)%10
-
         file_path = os.path.join('mirror', str(mirror_id),'login', 'user',str(count)+'.jpg')  
         f = open(file_path,'wb')
         f.write(file)
@@ -88,17 +87,13 @@ def on_message(client, userdata, msg):
     # 받아온 user_id로 폴더 생성
     if(msg.topic == 'createAccount/start'):
         #미러 아이디는 3글자로 고정
-        mirror_id = int(msg.payload[0:3])
-        global user_id
+        mirror_id = int(msg.payload[0:3])     
         user_id = int(msg.payload[3:])
-        print('mirror_id : ' +  str(mirror_id))
-        print('user_id : ' +  str(user_id))
         if not (flag):
             dir_path = os.path.join('mirror', str(mirror_id), 'train', str(user_id))
             #폴더가 없다면 만들고 있으면 안만들기
             if not (os.path.exists(dir_path)):
                 os.mkdir(dir_path)
-                print(dir_path + '폴더 생성')
                 flag = True
 
     if(msg.topic == 'createAccount/image'):
@@ -106,7 +101,6 @@ def on_message(client, userdata, msg):
             mirror_id = msg.payload[0:3].decode('utf-8')
             file =msg.payload[3:]
             count = (count +1)%20
-            print('user 아이디 : ' + str(user_id) + ', 사진 받아오기')
             file_path = os.path.join('mirror', str(mirror_id), 'train', str(user_id) )
             #폴더 생성
             if (os.path.exists(file_path)):
@@ -129,6 +123,7 @@ def on_message(client, userdata, msg):
 
 #broker_ip = '192.168.137.160' # 현재 이 컴퓨터를 브로커로 설정
 
+#broker_ip = '192.168.0.8'
 broker_ip = 'localhost'
 client = mqtt.Client()
 client.on_connect = on_connect
@@ -137,44 +132,20 @@ client.on_message = on_message
 client.connect(broker_ip, 1883)
 client.loop_start()
 
-stopFlag = False
-while True :
-    if(reTrain_flag):       
-        reTrain(embeddingModel, mirror_id)
-        client.publish('reTrain/check', mirror_id)
-        reTrain_flag = False
 
-    if(delete_folder_flag):
-        if not (delete_id ==''):
-            curDir = os.path.dirname(os.path.realpath(__file__))
-            os.chdir(curDir)
-            delete_folder_name = os.path.join('mirror', str(mirror_id), 'train',str(delete_id))
-            print('서버 mqtt.py | delete_folder_name :' + delete_folder_name)
-            #폴더가 있다면 삭제
-            if (os.path.exists(delete_folder_name)):
-                shutil.rmtree(delete_folder_name)
-                print('폴더를 삭제하였습니다')
-                
-            else:
-                print('이미 삭제된 폴더입니다.')
-            client.publish('delete/folder/check', str(delete_id))
-            delete_folder_flag = False
-        delete_id ==''
-        delete_folder_flag = False
+while True :
     if (login_flag):
         print('while - login')
         # 확인된 유저의 id 반환
-        login_id = login(embeddingModel, mirror_id)
-        
+        login_id = login(embeddingModel, mirror_id)   
         if(exist_flag):
-            client.publish('exist/check', str(login_id))
+            client.publish('{mirror_id}/exist/check', str(login_id))
             print("exist 체크 완료")
         elif(delete_login_flag):
-            client.publish('delete/login/check', str(login_id))
+            client.publish('{mirror_id}/delete/login/check', str(login_id))
             print('delete/login/check 완료')
-
         else :
-            client.publish('loginCheck', str(login_id))
+            client.publish('{mirror_id}/loginCheck', str(login_id))
             print('login')
         # print("sending %s" % loginCheck)
         login_flag = False
@@ -185,9 +156,31 @@ while True :
         print('while - createAccount')
         # 1은 pi 에서 받아온 유저아이디
         check = createAccoount(embeddingModel,mirror_id)
-        client.publish('createAccount/check', check)
-        print("sending %s" % check)
+        client.publish('{mirror_id}/createAccount/check', check)
         create_account_flag = False
+
+    if(reTrain_flag):       
+        reTrain(embeddingModel, mirror_id)
+        client.publish('{mirror_id}/reTrain/check', mirror_id)
+        reTrain_flag = False
+
+    if(delete_folder_flag):
+        if not (delete_id ==''):
+            curDir = os.path.dirname(os.path.realpath(__file__))
+            os.chdir(curDir)
+            delete_folder_name = os.path.join('mirror', str(mirror_id), 'train',str(delete_id))
+            #폴더가 있다면 삭제
+            if (os.path.exists(delete_folder_name)):
+                shutil.rmtree(delete_folder_name)
+                print('폴더를 삭제하였습니다')
+                
+            else:
+                print('이미 삭제된 폴더입니다.')
+            client.publish('{mirror_id}/delete/folder/check', str(delete_id))
+            delete_folder_flag = False
+        delete_id ==''
+        delete_folder_flag = False
+   
     if (stopFlag):
         break
    
