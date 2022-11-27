@@ -1,5 +1,3 @@
-
-from asyncio.windows_events import NULL
 from numpy import load
 from numpy import expand_dims
 from sklearn.preprocessing import LabelEncoder
@@ -17,7 +15,6 @@ def user_check(embedding_file_name, mirror_id):
     label_y = pre_embedding_file['arr_1']
     # 얼굴 임베딩 파일 불러오기
     data = load(embedding_file_name)
-    
     trainX = data['arr_0']
     # 입력 벡터 일반화
     in_encoder = Normalizer(norm='l2')
@@ -25,7 +22,6 @@ def user_check(embedding_file_name, mirror_id):
     # 목표 레이블 암호화
     out_encoder = LabelEncoder()
     out_encoder.fit(label_y)
-    print('모델 불러오기')
 
     # 모델 적합
     model_file = os.path.join('mirror',mirror_id,'files','model.pkl')
@@ -87,7 +83,8 @@ def model_fit(embedding_file_name, mirror_id):
     out_encoder.fit(trainy)
     trainy = out_encoder.transform(trainy)
     # 모델 적합
-    model_file = os.path.join('mirror',mirror_id,'files','model.pkl')
+
+    model_file = os.path.join('mirror', mirror_id,'files','model.pkl')
     #만들어진 모델이 없다면 새롭게 만든다
     model = SVC(kernel='linear', probability=True)
     model.fit(trainX, trainy)

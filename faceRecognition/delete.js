@@ -57,22 +57,22 @@ function deleteUser(){
   }
 }
 function rowEvent(){
-// 테이블의 Row 클릭시 값 가져오기
-$("#table-1 tr").mousedown(function(){ 	
+  // 테이블의 Row 클릭시 값 가져오기
+  $("#table-1 tr").mousedown(function(){ 	
 
-  // 현재 클릭된 Row(<tr>)
-  var tr = $(this);
-  var td = tr.children();
+    // 현재 클릭된 Row(<tr>)
+    var tr = $(this);
+    var td = tr.children();
 
-  // tr.text()는 클릭된 Row 즉 tr에 있는 모든 값을 가져온다.
-  console.log("클릭한 Row의 모든 데이터 : "+tr.text());
+    // tr.text()는 클릭된 Row 즉 tr에 있는 모든 값을 가져온다.
+    console.log("클릭한 Row의 모든 데이터 : "+tr.text());
 
-  // td.eq(index)를 통해 값을 가져올 수도 있다.
-  var name = td.eq(0).text();
-  deleteName = name
-  console.log('change deleteName : '+ deleteName)
+    // td.eq(index)를 통해 값을 가져올 수도 있다.
+    var name = td.eq(0).text();
+    deleteName = name
+    console.log('change deleteName : '+ deleteName)
 
-});
+  });
 
 
 }
