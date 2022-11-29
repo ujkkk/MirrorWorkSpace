@@ -47,7 +47,7 @@ def on_message(client, userdata, msg):
     global delete_id
     global mirror_id
     print('받은 topic :' + msg.topic)
-    print('받은 메시지 : ' + str(msg.payload))
+  #  print('받은 메시지 : ' + str(msg.payload))
     #command = msg.payload.decode("utf-8")
    # print("receiving ", msg.topic, " ", str(msg.payload))
 
@@ -155,13 +155,13 @@ while True :
         # 확인된 유저의 id 반환
         login_id = login(embeddingModel, mirror_id)   
         if(exist_flag):
-            client.publish('{mirror_id}/exist/check', str(login_id))
+            client.publish(f'{mirror_id}/exist/check', str(login_id))
             print("exist 체크 완료")
         elif(delete_login_flag):
-            client.publish('{mirror_id}/delete/login/check', str(login_id))
+            client.publish(f'{mirror_id}/delete/login/check', str(login_id))
             print('delete/login/check 완료')
         else :
-            client.publish('{mirror_id}/loginCheck', str(login_id))
+            client.publish(f'{mirror_id}/loginCheck', str(login_id))
             print('login')
         # print("sending %s" % loginCheck)
         login_flag = False
@@ -172,12 +172,12 @@ while True :
         print('while - createAccount')
         # 1은 pi 에서 받아온 유저아이디
         check = createAccoount(embeddingModel,mirror_id)
-        client.publish('{mirror_id}/createAccount/check', check)
+        client.publish(f'{mirror_id}/createAccount/check', user_id)
         create_account_flag = False
 
     if(reTrain_flag):       
         reTrain(embeddingModel, mirror_id)
-        client.publish('{mirror_id}/reTrain/check', mirror_id)
+        client.publish(f'{mirror_id}/reTrain/check', mirror_id)
         reTrain_flag = False
 
     if(delete_folder_flag):
@@ -192,7 +192,7 @@ while True :
                 
             else:
                 print('이미 삭제된 폴더입니다.')
-            client.publish('{mirror_id}/delete/folder/check', str(delete_id))
+            client.publish(f'{mirror_id}/delete/folder/check', str(delete_id))
             delete_folder_flag = False
         delete_id ==''
         delete_folder_flag = False
